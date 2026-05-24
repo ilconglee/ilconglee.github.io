@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IlCong Lee</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400&family=Comic+Relief:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Design tokens ─────────────────────────────────────────── */
+    :root {
+      --bg: #FFFFFF;
+      --bar: #000000;
+      --body-text: #000000;
+    }
+
+    /* ── Reset ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--body-text);
+      font-family: 'Bodoni Moda', Georgia, serif;
+      min-height: 100%;
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    /* ── Needle + thread overlays ──────────────────────────────── */
+    #needle-svg {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      top: -200px; left: -200px;   /* off-screen until first mousemove */
+      transform: rotate(-30deg);
+      transform-origin: 11px 0px;  /* rotate around the tip point */
+      shape-rendering: geometricPrecision;
+    }
+    /* Thread behind needle (chain) */
+    #thread-canvas-back {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 9998;
+    }
+    /* Thread in front of needle (right-side eye stub) */
+    #thread-canvas-front {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 10000;
+    }
+
+    /* ── Fixed header ──────────────────────────────────────────── */
+    #header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 64px 48px 0 48px;  /* equal left/right margins = 48px */
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between; /* fill full width */
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* ── Black bar ─────────────────────────────────────────────── */
+    .nav-bar {
+      pointer-events: all;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bar);
+      height: 27px;
+      padding: 0 14px;
+      border-radius: 0px;
+      cursor: none;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .nav-bar svg { display: block; overflow: visible; shape-rendering: auto; }
+
+    /* ── Black circle ──────────────────────────────────────────── */
+    .nav-circle {
+      pointer-events: all;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bar);
+      width: 27px; height: 27px;
+      border-radius: 50%;
+      cursor: none;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .nav-circle svg { display: block; overflow: visible; shape-rendering: auto; }
+
+    @keyframes wiggle {
+      0%   { transform: translateX(0); }
+      20%  { transform: translateX(-4px); }
+      45%  { transform: translateX(4px); }
+      65%  { transform: translateX(-3px); }
+      82%  { transform: translateX(2px); }
+      100% { transform: translateX(0); }
+    }
+    .wiggling { animation: wiggle 0.35s ease-out; }
+
+    /* ── Scrollable content area below fixed header ────────────── */
+    #content-area {
+      position: fixed;
+      top: 111px;       /* 64px header-top + 27px bar height + 20px gap */
+      left: 48px; right: 48px;
+      bottom: 0;
+      overflow-y: auto;
+      padding: 20px 0 60px;
+    }
+    #content-area::-webkit-scrollbar { width: 3px; }
+    #content-area::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+    /* ── Section panels ────────────────────────────────────────── */
+    .section-panel {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease-out, visibility 0s linear 0.3s;
+}
+
+.section-panel.open {
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.3s ease-out;
+}
+
+.section-panel.visible {
+  opacity: 1;
+}
+
+    /* ── Sub-bar (always-on stitching label) ───────────────────── */
+    .sub-bar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bar);
+      height: 27px;
+      padding: 0 14px;
+      border-radius: 0px;
+      flex-shrink: 0;
+    }
+    .sub-bar svg { display: block; overflow: visible; shape-rendering: auto; }
+
+    /* ── Section content layout ────────────────────────────────── */
+    .section-body { padding-bottom: 48px; }
+
+    .skill-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 46px;
+}
+
+.skill-row .sub-bar {
+  margin-top: 0;
+}
+
+.skill-items {
+  font-family: 'Bodoni Moda', Georgia, serif;
+  font-size: 15px;
+  line-height: 27px;
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 36px;
+  row-gap: 0px;
+}
+
+.entry-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 46px;
+}
+
+.entry-row .sub-bar {
+  margin-top: 0;
+}
+
+.entry-text {
+  font-family: 'Bodoni Moda', Georgia, serif;
+  font-size: 15px;
+  line-height: 27px;
+}
+
+    /* ── Works ─────────────────────────────────────────────────── */
+    .work-item { margin-bottom: 68px; }
+    .work-title {
+      font-family: 'Bodoni Moda', Georgia, serif;
+      font-size: 15px;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .work-title a { color: inherit; text-decoration: none; }
+    .work-title a:hover { text-decoration: underline; }
+    .work-thumb-link { display: inline-block; line-height: 0; }
+    .work-thumb {
+      display: block;
+      width: 220px; height: 124px;
+      object-fit: cover;
+      border: 1px solid #ddd;
+    }
+    .work-coming-soon {
+      width: 220px; height: 124px;
+      background: #f2f2f2;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bodoni Moda', Georgia, serif;
+      font-size: 15px;
+      color: #555;
+    }
+
+    /* ── Contact ────────────────────────────────────────────────── */
+    .contact-list { display: flex; flex-direction: column; gap: 16px; }
+    .contact-bar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bar);
+  height: 27px;
+  padding: 0 14px;
+  border-radius: 0px;
+  text-decoration: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.contact-bar svg {
+  display: block;
+  overflow: visible;
+  shape-rendering: auto;
+}
+
+    /* ── Mobile ─────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      body { cursor: auto; }
+      #needle-svg, #thread-canvas-back, #thread-canvas-front { display: none; }
+      #header {
+        position: relative;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 10px;
+        padding: 24px 0 0 20px;
+        overflow: visible;
+      }
+      #content-area {
+        position: relative;
+        top: auto; left: auto; right: auto; bottom: auto;
+        padding: 12px 20px 60px;
+        overflow-y: visible;
+      }
+      .nav-bar, .nav-circle { cursor: pointer; }
+      .contact-bar { cursor: pointer; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Thread behind needle -->
+<canvas id="thread-canvas-back"></canvas>
+<!-- Thread in front of needle (right-side eye stub) -->
+<canvas id="thread-canvas-front"></canvas>
+
+<!--
+  Needle SVG.
+  Viewbox 0 0 22 60. Tip at (11, 0), bottom at (11, 60).
+  CSS sets transform-origin: 11px 0px (the tip).
+  JS sets left = mouseX - 11, top = mouseY.
+  After 13° clockwise rotation around (11, 0), the tip stays at (mouseX, mouseY).
+-->
+<svg id="needle-svg" width="22" height="60" viewBox="0 0 22 60" xmlns="http://www.w3.org/2000/svg">
+  <!-- Lenticular body: smooth symmetric lens, tip at top -->
+  <path d="M11,0 C15.6,7 17.5,19 17.5,30 C17.5,43 14.8,53 11,60 C7.2,53 4.5,43 4.5,30 C4.5,19 6.4,7 11,0 Z"
+        fill="#888888"/>
+  <!-- Eye (hole) near blunt end — anatomically correct -->
+  <ellipse cx="11" cy="47" rx="2.6" ry="4" fill="#ffffff"/>
+</svg>
+
+<!-- Fixed header -->
+<header id="header">
+  <div class="nav-bar"    id="bar-ilcong"       data-section="ilcong"       data-label="IlCong Lee"></div>
+  <div class="nav-bar"    id="bar-performances" data-section="performances" data-label="Performances"></div>
+  <div class="nav-bar"    id="bar-projects"     data-section="projects"     data-label="Projects"></div>
+  <div class="nav-bar"    id="bar-works"        data-section="works"        data-label="Works"></div>
+  <div class="nav-bar"    id="bar-contact"      data-section="contact"      data-label="Contact"></div>
+  <div class="nav-circle" id="bar-hash"         data-section="hash"         data-label="#"></div>
+</header>
+
+<!-- Scrollable content panels -->
+<div id="content-area">
+
+  <!-- A. IlCong Lee -->
+  <div class="section-panel" id="panel-ilcong">
+    <div class="section-body">
+      <div class="skill-row">
+        <div class="sub-bar" id="sub-skills"></div>
+        <div class="skill-items">
+  <span>LiveElectronics</span>
+  <span>Multichannel</span>
+  <span>Acoustics</span>
+  <span>Recording</span>
+  <span>Mixing/Mastering</span>
+  <span>SoundDesign</span>
+  <span>AudioVisual</span>
+  <span>AmbienceSound</span>
+  <span>Ambient music</span>
+</div>
+      </div>
+      <div class="skill-row">
+        <div class="sub-bar" id="sub-tools"></div>
+        <div class="skill-items">
+  <span>MAX/MSP/Jitter</span>
+  <span>RNBO</span>
+  <span>SuperCollider</span>
+  <span>AbletonLive</span>
+  <span>Protools</span>
+  <span>Sibelius</span>
+  <span>Arduino</span>
+</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B. Performances -->
+  <div class="section-panel" id="panel-performances">
+    <div class="section-body">
+      <div class="entry-row">
+        <div class="sub-bar" id="sub-festm2026"></div>
+        <div class="entry-text">인고침 (忍苦砧) for 다듬잇돌 and Live Electronics (2026)</div>
+      </div>
+      <div class="entry-row">
+        <div class="sub-bar" id="sub-festm2024"></div>
+        <div class="entry-text">'Trolley' for Tuba and Live Electronics (2023)</div>
+      </div>
+      <div class="entry-row">
+        <div class="sub-bar" id="sub-festm2023"></div>
+        <div class="entry-text">'The Little Voice In My Head' for Violin and Electronics (2023)</div>
+      </div>
+      <div class="entry-row">
+        <div class="sub-bar" id="sub-icmc2023"></div>
+        <div class="entry-text">'The Little Voice In My Head' for Violin and Electronics (2023)</div>
+      </div>
+      <div class="entry-row">
+        <div class="sub-bar" id="sub-dicmf2023"></div>
+        <div class="entry-text">'The Little Voice In My Head' for Violin and Electronics (2023)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C. Projects -->
+  <div class="section-panel" id="panel-projects">
+    <div class="section-body">
+      <div class="entry-row">
+        <div class="sub-bar" id="sub-syzygy"></div>
+        <div class="entry-text">Art game Prototype (2025) – Arts Korea Lab, RNBO Sound System Develop / BGM</div>
+      </div>
+      <div class="entry-row">
+        <div class="sub-bar" id="sub-iloveyou"></div>
+        <div class="entry-text">VR Game (2025) – SIGGRAPH ASIA, Sound</div>
+      </div>
+      <div class="entry-row">
+        <div class="sub-bar" id="sub-plantcare"></div>
+        <div class="entry-text">VR Game (2025) – VCU, BGM</div>
+      </div>
+      <div class="entry-row">
+        <div class="sub-bar" id="sub-doorman"></div>
+        <div class="entry-text">XR Musical (2024) – Stage 66, Sound design</div>
+      </div>
+      <div class="entry-row">
+        <div class="sub-bar" id="sub-hana"></div>
+        <div class="entry-text">XR Musical (2024) – CKL Stage, Sound design</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D. Works -->
+  <div class="section-panel" id="panel-works">
+    <div class="section-body">
+
+      <div class="work-item">
+        <div class="work-title">
+          <a href="https://youtu.be/H0Ah2hXy-88" target="_blank" rel="noopener noreferrer">
+            인고침 (忍苦砧) for 다듬잇돌 and Live Electronics (2026)
+          </a>
+        </div>
+        <a class="work-thumb-link" href="https://youtu.be/H0Ah2hXy-88" target="_blank" rel="noopener noreferrer">
+          <img class="work-thumb" src="https://img.youtube.com/vi/H0Ah2hXy-88/hqdefault.jpg" alt="인고침" loading="lazy">
+        </a>
+      </div>
+
+      <div class="work-item">
+        <div class="work-title">
+          <a href="https://youtu.be/Tch5AWKle9g" target="_blank" rel="noopener noreferrer">
+            '天地人' for One Performer and Sewing Machine with Arduino (2025)
+          </a>
+        </div>
+        <a class="work-thumb-link" href="https://youtu.be/Tch5AWKle9g" target="_blank" rel="noopener noreferrer">
+          <img class="work-thumb" src="https://img.youtube.com/vi/Tch5AWKle9g/hqdefault.jpg" alt="天地人" loading="lazy">
+        </a>
+      </div>
+
+      <div class="work-item">
+        <div class="work-title">
+          <a href="https://youtu.be/GCeSyo8p-6E" target="_blank" rel="noopener noreferrer">
+            'Geliocentric' for 6ch Live Electronics (2024)
+          </a>
+        </div>
+        <a class="work-thumb-link" href="https://youtu.be/GCeSyo8p-6E" target="_blank" rel="noopener noreferrer">
+          <img class="work-thumb" src="https://img.youtube.com/vi/GCeSyo8p-6E/hqdefault.jpg" alt="Geliocentric" loading="lazy">
+        </a>
+      </div>
+
+      <div class="work-item">
+        <div class="work-title">
+          <a href="https://youtu.be/1Zt9EetgQkI" target="_blank" rel="noopener noreferrer">
+            'Übermensch' for 2ch Tape (2024)
+          </a>
+        </div>
+        <a class="work-thumb-link" href="https://youtu.be/1Zt9EetgQkI" target="_blank" rel="noopener noreferrer">
+          <img class="work-thumb" src="https://img.youtube.com/vi/1Zt9EetgQkI/hqdefault.jpg" alt="Übermensch" loading="lazy">
+        </a>
+      </div>
+
+      <div class="work-item">
+        <div class="work-title">
+          <a href="https://youtu.be/iIqCC3MiLvA" target="_blank" rel="noopener noreferrer">
+            [SYZYGY] (2025)
+          </a>
+        </div>
+        <a class="work-thumb-link" href="https://youtu.be/iIqCC3MiLvA" target="_blank" rel="noopener noreferrer">
+          <img class="work-thumb" src="https://img.youtube.com/vi/iIqCC3MiLvA/hqdefault.jpg" alt="SYZYGY" loading="lazy">
+        </a>
+      </div>
+
+      <!-- No link, Coming Soon -->
+      <div class="work-item">
+        <div class="work-title">[I Love You, Customers :)] (2025)</div>
+        <div class="work-coming-soon">Coming Soon</div>
+      </div>
+
+      <div class="work-item">
+        <div class="work-title">
+          <a href="https://youtube.com/shorts/OUugxilj6i8" target="_blank" rel="noopener noreferrer">
+            [PlantCare Simulator] (2025)
+          </a>
+        </div>
+        <a class="work-thumb-link" href="https://youtube.com/shorts/OUugxilj6i8" target="_blank" rel="noopener noreferrer">
+          <img class="work-thumb" src="https://img.youtube.com/vi/OUugxilj6i8/hqdefault.jpg" alt="PlantCare Simulator" loading="lazy">
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- E. Contact — solid white Comic Relief text, no animation, no i/j substitution -->
+  <div class="section-panel" id="panel-contact">
+    <div class="section-body">
+      <div class="contact-list">
+  <a class="contact-bar" id="contact-email" href="mailto:o3oq3qo3o@gmail.com"></a>
+  <a class="contact-bar" id="contact-instagram" href="https://instagram.com/ilconglee" target="_blank" rel="noopener noreferrer"></a>
+</div>
+    </div>
+  </div>
+
+  <!-- F. # — no content panel (circle only) -->
+
+</div><!-- #content-area -->
+
+<script>
+/* ================================================================
+   UTILITY
+================================================================ */
+const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+
+/* ================================================================
+   NEEDLE CURSOR
+================================================================ */
+const needleEl  = document.getElementById('needle-svg');
+let   mouseX    = -300;
+let   mouseY    = -300;
+
+const ANGLE_DEG = -30;  /* counter-clockwise = standard cursor lean */
+const ANGLE_RAD = ANGLE_DEG * Math.PI / 180;
+
+// left = mouseX - 11, top = mouseY  →  tip stays at (mouseX, mouseY) after rotation ✓
+// Eye at SVG local (11, 47), relative to pivot (11,0) = (0, 47).
+// After -30° rotation: dx = -47·sin(-30°) ≈ 23.5, dy = 47·cos(-30°) ≈ 40.7
+const EYE_Y     = 47;
+const EYE_DX    = -EYE_Y * Math.sin(ANGLE_RAD);   // ≈ 23.5
+const EYE_DY    =  EYE_Y * Math.cos(ANGLE_RAD);   // ≈ 40.7
+// Screen eye: (mouseX + EYE_DX, mouseY + EYE_DY)
+// Needle right direction (perpendicular to axis, toward right side of needle):
+const NEEDLE_RX = Math.cos(ANGLE_RAD);   // ≈  0.866
+const NEEDLE_RY = Math.sin(ANGLE_RAD);   // ≈ -0.5
+const STUB_LEN  = 13;  // px: right-side stub drawn in front of needle
+
+function positionNeedle() {
+  needleEl.style.left = (mouseX - 11) + 'px';
+  needleEl.style.top  =  mouseY       + 'px';
+}
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  if (!isMobile()) positionNeedle();
+});
+
+// Show system pointer over links, hide needle
+document.addEventListener('mouseover', e => {
+  if (isMobile()) return;
+  const el = e.target.closest('a, button');
+  if (el) {
+    needleEl.style.opacity = '0';
+    el.style.cursor = 'pointer';
+  }
+});
+document.addEventListener('mouseout', e => {
+  if (isMobile()) return;
+  const el = e.target.closest('a, button');
+  if (el) {
+    needleEl.style.opacity = '1';
+    el.style.cursor = '';
+  }
+});
+
+/* ================================================================
+   THREADED NEEDLE DRAWING — physical thread pinned at needle eye
+================================================================ */
+const canvasBack  = document.getElementById('thread-canvas-back');
+const ctxBack     = canvasBack.getContext('2d');
+const canvasFront = document.getElementById('thread-canvas-front');
+const ctxFront    = canvasFront.getContext('2d');
+
+function resizeCanvas() {
+  canvasBack.width  = canvasFront.width  = window.innerWidth;
+  canvasBack.height = canvasFront.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+/*
+  바늘 SVG가 -30도 회전되어 있으므로
+  바늘 내부 좌표도 같은 각도로 회전해서 화면 좌표로 바꾼다.
+*/
+function needlePoint(localDx, localY) {
+  return {
+    x: mouseX + localDx * Math.cos(ANGLE_RAD) - localY * Math.sin(ANGLE_RAD),
+    y: mouseY + localDx * Math.sin(ANGLE_RAD) + localY * Math.cos(ANGLE_RAD)
+  };
+}
+
+/*
+  실이 바늘귀에 딱 붙는 고정점.
+  이 점 하나만 고정된다.
+*/
+function getThreadPinPoint() {
+  return needlePoint(0.2, 47.2);
+}
+
+/* ── 뒤쪽으로 축 늘어지는 실 ───────────────────────────────── */
+const BACK_NODES = 30;
+const BACK_SEG_LEN = 6.2;
+
+/* ── 앞쪽으로 빠져나오는 실: 더 길게 설정 ───────────────────── */
+const FRONT_NODES = 22;
+const FRONT_SEG_LEN = 4.2;
+
+const DAMPING = 0.76;
+const GRAVITY = 0.088;
+const ITERS   = 8;
+
+const backNodes = Array.from({ length: BACK_NODES }, () => ({
+  x: 0,
+  y: 0,
+  px: 0,
+  py: 0
+}));
+
+const frontNodes = Array.from({ length: FRONT_NODES }, () => ({
+  x: 0,
+  y: 0,
+  px: 0,
+  py: 0
+}));
+
+let threadInit = false;
+
+function initThreadPhysics() {
+  const p = getThreadPinPoint();
+
+  // 뒤쪽 실은 아래로 시작
+  for (let i = 0; i < BACK_NODES; i++) {
+    backNodes[i].x  = p.x;
+    backNodes[i].y  = p.y + i * BACK_SEG_LEN;
+    backNodes[i].px = backNodes[i].x;
+    backNodes[i].py = backNodes[i].y;
+  }
+
+  // 앞쪽 실은 오른쪽 아래 방향으로 시작
+  for (let i = 0; i < FRONT_NODES; i++) {
+    frontNodes[i].x  = p.x + i * FRONT_SEG_LEN * 0.95;
+    frontNodes[i].y  = p.y + i * FRONT_SEG_LEN * 0.25;
+    frontNodes[i].px = frontNodes[i].x;
+    frontNodes[i].py = frontNodes[i].y;
+  }
+
+  threadInit = true;
+}
+
+function stepChain(chain, damping, gravity) {
+  for (let i = 1; i < chain.length; i++) {
+    const n = chain[i];
+
+    const vx = (n.x - n.px) * damping;
+    const vy = (n.y - n.py) * damping;
+
+    n.px = n.x;
+    n.py = n.y;
+
+    n.x += vx;
+    n.y += vy + gravity;
+  }
+}
+
+function satisfyChain(chain, segLen) {
+  for (let it = 0; it < ITERS; it++) {
+    for (let i = 0; i < chain.length - 1; i++) {
+      const a = chain[i];
+      const b = chain[i + 1];
+
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const d  = Math.sqrt(dx * dx + dy * dy) || 0.001;
+      const diff = (d - segLen) / d;
+
+      if (i === 0) {
+        // 0번 노드는 바늘귀에 고정, 1번 노드부터만 움직임
+        b.x -= dx * diff;
+        b.y -= dy * diff;
+      } else {
+        a.x += dx * diff * 0.5;
+        a.y += dy * diff * 0.5;
+        b.x -= dx * diff * 0.5;
+        b.y -= dy * diff * 0.5;
+      }
+    }
+  }
+}
+
+function stepThreadPhysics() {
+  if (mouseX < -200 || mouseY < -200) return;
+  if (!threadInit) initThreadPhysics();
+
+  const p = getThreadPinPoint();
+
+  /*
+    바늘귀의 딱 한 점만 고정.
+    고정선이 길게 생기지 않게 두 체인의 0번 노드를 같은 점에 묶는다.
+  */
+  backNodes[0].x  = p.x;
+  backNodes[0].y  = p.y;
+  backNodes[0].px = p.x;
+  backNodes[0].py = p.y;
+
+  frontNodes[0].x  = p.x;
+  frontNodes[0].y  = p.y;
+  frontNodes[0].px = p.x;
+  frontNodes[0].py = p.y;
+
+  stepChain(backNodes, DAMPING, GRAVITY);
+  stepChain(frontNodes, DAMPING, GRAVITY * 0.65);
+
+  satisfyChain(backNodes, BACK_SEG_LEN);
+  satisfyChain(frontNodes, FRONT_SEG_LEN);
+}
+
+function drawChain(ctx, chain) {
+  ctx.beginPath();
+  ctx.moveTo(chain[0].x, chain[0].y);
+
+  for (let i = 1; i < chain.length - 1; i++) {
+    const mx = (chain[i].x + chain[i + 1].x) / 2;
+    const my = (chain[i].y + chain[i + 1].y) / 2;
+    ctx.quadraticCurveTo(chain[i].x, chain[i].y, mx, my);
+  }
+
+  ctx.lineTo(chain[chain.length - 1].x, chain[chain.length - 1].y);
+  ctx.stroke();
+}
+
+function drawThread() {
+  ctxBack.clearRect(0, 0, canvasBack.width, canvasBack.height);
+  ctxFront.clearRect(0, 0, canvasFront.width, canvasFront.height);
+
+  if (isMobile() || !threadInit) return;
+
+  /*
+    뒤쪽 실: 바늘 SVG 뒤에 그려짐.
+    바늘 몸통에 가려지므로 자연스럽게 뒤쪽 실처럼 보인다.
+  */
+  ctxBack.save();
+  ctxBack.strokeStyle = '#000000';
+  ctxBack.lineWidth   = 1.2;
+  ctxBack.lineCap     = 'round';
+  ctxBack.lineJoin    = 'round';
+  drawChain(ctxBack, backNodes);
+  ctxBack.restore();
+
+  /*
+    앞쪽 실: 바늘귀 위에 그려짐.
+    긴 고정 통과선을 그리지 않고,
+    고정점 바로 다음 노드부터 물리 체인으로 이어진다.
+  */
+  ctxFront.save();
+  ctxFront.strokeStyle = '#000000';
+  ctxFront.lineWidth   = 1.2;
+  ctxFront.lineCap     = 'round';
+  ctxFront.lineJoin    = 'round';
+  drawChain(ctxFront, frontNodes);
+  ctxFront.restore();
+}
+
+function loop() {
+  if (!isMobile()) positionNeedle();
+  stepThreadPhysics();
+  drawThread();
+  requestAnimationFrame(loop);
+}
+loop();
+
+/* ================================================================
+   SVG STITCHING TEXT SYSTEM
+================================================================ */
+
+// Hidden SVG for font measurement (must be attached to DOM with fonts loaded)
+const measSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+measSVG.style.cssText =
+  'position:absolute;top:-9999px;left:-9999px;' +
+  'visibility:hidden;width:1px;height:1px;overflow:visible;';
+document.body.appendChild(measSVG);
+
+function measWidth(str, fs) {
+  const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  t.setAttribute('font-family', "'Comic Relief', sans-serif");
+  t.setAttribute('font-size', String(fs));
+  t.setAttribute('font-weight', '400');
+  t.textContent = str;
+  measSVG.appendChild(t);
+  const w = t.getComputedTextLength();
+  measSVG.removeChild(t);
+  return w;
+}
+
+/*
+  Tokenise a label string for SVG rendering.
+  Rules:
+    - lowercase 'i' → dotless ı + x-mark at dot position
+    - lowercase 'j' → dotless ȷ + x-mark at dot position
+    - ':)' sequence → invisible colon (space reserved) + two x-marks (colon dots) + ')' char
+    - All other chars → normal char
+
+  barH: total SVG/bar height (for computing baseline from top)
+  fs:   font-size in px
+
+  Returns: { tokens: [...], totalW: number, charCount: number }
+  token types:
+    { kind:'char',   ch, x, w, ci }   (ci = stagger index)
+    { kind:'xmark',  cx, cy, ci }
+*/
+function tokenise(label, fs, barH) {
+  const tokens = [];
+  let cx = 0;   // running x cursor
+  let ci = 0;   // char stagger index
+
+  const LETTER_SPACING = fs * 0.12;
+
+  // With dominant-baseline="central" at y = barH/2, baseline ≈ barH/2 + fs*0.35
+  const baseline   = barH / 2 + fs * 0.35;
+  // Colon dot positions (used for :) substitution)
+  const COLON_Y_OFFSET = 2;
+
+  const colonTopY  = baseline - fs * 0.65 + COLON_Y_OFFSET;
+  const colonBotY  = baseline - fs * 0.28 + COLON_Y_OFFSET;
+
+  let i = 0;
+while (i < label.length) {
+  const ch = label[i];
+
+  // lowercase i → dotless ı + x-mark
+  if (ch === 'i') {
+    const dotless = 'ı';
+    const w = measWidth(dotless, fs);
+
+    tokens.push({ kind: 'char', ch: dotless, x: cx, w, ci });
+
+    tokens.push({
+      kind: 'xmark',
+      cx: cx + w / 2,
+      cy: baseline - fs * 0.68,
+      ci
+    });
+
+    cx += w + LETTER_SPACING;
+    ci++;
+    i++;
+
+  // lowercase j → dotless ȷ + x-mark
+  } else if (ch === 'j') {
+    const dotless = 'ȷ';
+    const w = measWidth(dotless, fs);
+
+    tokens.push({ kind: 'char', ch: dotless, x: cx, w, ci });
+
+    tokens.push({
+      kind: 'xmark',
+      cx: cx + w / 2,
+      cy: baseline - fs * 0.68,
+      ci
+    });
+
+    cx += w + LETTER_SPACING;
+    ci++;
+    i++;
+
+  // colon : → two x-marks
+  } else if (ch === ':') {
+    const cw = measWidth(':', fs);
+    const colonCX = cx + cw / 2;
+
+    tokens.push({ kind: 'xmark', cx: colonCX, cy: colonTopY, ci });
+    tokens.push({ kind: 'xmark', cx: colonCX, cy: colonBotY, ci });
+
+    cx += cw + LETTER_SPACING;
+    ci++;
+    i++;
+
+  // normal characters
+  } else {
+    const w = measWidth(ch, fs);
+    tokens.push({ kind: 'char', ch, x: cx, w, ci });
+    cx += w + LETTER_SPACING;
+    ci++;
+    i++;
+  }
+}
+
+  return { tokens, totalW: cx, charCount: ci };
+}
+
+/*
+  Build an SVG element containing the stitched text.
+  isStatic: true → always visible (no animation), used for sub-bars.
+*/
+function buildSVG(label, fs, barH, isStatic) {
+  const { tokens, totalW, charCount } = tokenise(label, fs, barH);
+
+  const svgW = Math.ceil(totalW);
+  const svgH = barH;
+  const midY = barH / 2;
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width',   String(svgW));
+  svg.setAttribute('height',           String(svgH));
+  svg.setAttribute('viewBox',          `0 0 ${svgW} ${svgH}`);
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+  // Per-character stagger: 100ms between each char (completes before next starts)
+  const CHAR_DELAY = 0.1;
+  const xHalf = fs * 0.05;   // half-size of × arm
+  const SW    = 0.6;          // thin stroke — traces glyph outline cleanly
+  const DA    = '3 4';        // dash 3px, gap 4px — clearly separated stitches
+  const XW    = 0.7;          // xmark line width
+
+  tokens.forEach(tok => {
+    if (tok.kind === 'char') {
+      const delay = isStatic ? 0 : tok.ci * CHAR_DELAY;
+
+      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t.setAttribute('x',                String(tok.x));
+      t.setAttribute('y',                String(midY));
+      t.setAttribute('dominant-baseline','central');
+      t.setAttribute('font-family',      "'Comic Relief', sans-serif");
+      t.setAttribute('font-size',        String(fs));
+      t.setAttribute('font-weight',      '400');
+      t.setAttribute('fill',             'none');
+      t.setAttribute('stroke',           '#ffffff');
+      t.setAttribute('stroke-width',     String(SW));
+      t.setAttribute('stroke-linecap',   'round');
+      t.setAttribute('stroke-dasharray', DA);
+      t.textContent = tok.ch;
+
+      if (isStatic) {
+        t.style.opacity = '1';
+      } else {
+        t.style.opacity = '0';
+        t.dataset.delay = String(delay);
+        t.dataset.ci    = String(tok.ci);
+        t.classList.add('anim-ch');
+      }
+      svg.appendChild(t);
+
+    } else /* xmark */ {
+      const delay = isStatic ? 0 : tok.ci * CHAR_DELAY * 0.65 + 0.07;
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      if (isStatic) {
+        g.style.opacity = '1';
+      } else {
+        g.style.opacity = '0';
+        g.dataset.delay = String(delay);
+        g.classList.add('anim-x');
+      }
+
+      // Two diagonal lines forming ×
+      const coords = [
+        [tok.cx - xHalf, tok.cy - xHalf, tok.cx + xHalf, tok.cy + xHalf],
+        [tok.cx + xHalf, tok.cy - xHalf, tok.cx - xHalf, tok.cy + xHalf],
+      ];
+      coords.forEach(([x1, y1, x2, y2]) => {
+        const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        ln.setAttribute('x1', String(x1));
+        ln.setAttribute('y1', String(y1));
+        ln.setAttribute('x2', String(x2));
+        ln.setAttribute('y2', String(y2));
+        ln.setAttribute('stroke',        '#ffffff');
+        ln.setAttribute('stroke-width',  String(XW));
+        ln.setAttribute('stroke-linecap','round');
+        g.appendChild(ln);
+      });
+      svg.appendChild(g);
+    }
+  });
+
+  return svg;
+}
+
+/* Animate all chars in a bar SVG in or out.
+   Cancels any pending in-rAFs before starting out. */
+function animBar(svg, dir) {
+  const chars  = svg.querySelectorAll('.anim-ch');
+  const xmarks = svg.querySelectorAll('.anim-x');
+  const total  = chars.length;
+  const DUR    = 0.06;   // fast per-char (finishes before next char starts at 0.1s stagger)
+
+  // Cancel pending in-direction rAF IDs stored on svg
+  if (svg._rafIds) {
+    svg._rafIds.forEach(id => cancelAnimationFrame(id));
+  }
+  svg._rafIds = [];
+
+  if (dir === 'in') {
+    // Reset to hidden synchronously, then schedule transition
+    chars.forEach(el => {
+      el.style.transition = 'none';
+      el.style.opacity    = '0';
+    });
+    xmarks.forEach(el => {
+      el.style.transition = 'none';
+      el.style.opacity    = '0';
+    });
+
+    // Force reflow so the opacity:0 reset registers
+    if (chars.length) void chars[0].getBoundingClientRect();
+
+    chars.forEach(el => {
+      const delay = parseFloat(el.dataset.delay || 0);
+      const id = requestAnimationFrame(() => {
+        el.style.transition = `opacity ${DUR}s ease-out ${delay}s`;
+        el.style.opacity    = '1';
+      });
+      svg._rafIds.push(id);
+    });
+    xmarks.forEach(el => {
+      const delay = parseFloat(el.dataset.delay || 0);
+      const id = requestAnimationFrame(() => {
+        el.style.transition = `opacity ${DUR}s ease-out ${delay}s`;
+        el.style.opacity    = '1';
+      });
+      svg._rafIds.push(id);
+    });
+
+  } else {
+    // Reverse stagger: last char index fades first
+    chars.forEach(el => {
+      const ci       = parseInt(el.dataset.ci || 0);
+      const revDelay = (total - 1 - ci) * 0.05;
+      el.style.transition = `opacity 0.05s ease-in ${revDelay}s`;
+      el.style.opacity    = '0';
+    });
+    xmarks.forEach(el => {
+      el.style.transition = 'opacity 0.05s ease-in';
+      el.style.opacity    = '0';
+    });
+  }
+}
+
+/* ================================================================
+   NAV BAR SETUP
+================================================================ */
+function setupNavBars() {
+  document.querySelectorAll('.nav-bar[data-label]').forEach(barEl => {
+    const label = barEl.dataset.label;
+    const svg   = buildSVG(label, 17, 27, false);  // 17 ≈ 27 * 0.65
+    const svgW  = parseInt(svg.getAttribute('width'));
+    barEl.style.width = (svgW + 28) + 'px';
+    barEl.appendChild(svg);
+
+    let active = false;
+
+    barEl.addEventListener('mouseenter', () => {
+      active = true;
+      animBar(svg, 'in');
+    });
+    barEl.addEventListener('mouseleave', () => {
+      // Don't animate out if this section is currently open (text stays pinned)
+      if (currentSection === barEl.dataset.section) return;
+      active = false;
+      animBar(svg, 'out');
+    });
+    barEl.addEventListener('click', () => {
+      toggleSection(barEl.dataset.section);
+    });
+  });
+
+  // Hash circle
+  const hashEl  = document.getElementById('bar-hash');
+  const hashSVG = buildSVG('#', 17, 27, false);
+  hashEl.appendChild(hashSVG);
+  let hashActive = false;
+
+  hashEl.addEventListener('mouseenter', () => {
+    if (!hashActive) { hashActive = true; animBar(hashSVG, 'in'); }
+  });
+  hashEl.addEventListener('mouseleave', () => {
+    if (hashActive) { hashActive = false; animBar(hashSVG, 'out'); }
+  });
+  hashEl.addEventListener('click', () => {
+    hashEl.classList.remove('wiggling');
+    void hashEl.offsetWidth;            // reflow to restart animation
+    hashEl.classList.add('wiggling');
+    hashEl.addEventListener('animationend', () => {
+      hashEl.classList.remove('wiggling');
+    }, { once: true });
+  });
+}
+
+/* ================================================================
+   SUB-BAR SETUP (always-visible stitching labels in content areas)
+================================================================ */
+function setupSubBars() {
+  const defs = [
+    ['sub-skills',    'Skills',                  17, 27],
+['sub-tools',     'Tools',                   17, 27],
+['sub-festm2026', 'Fest-M 2026',             17, 27],
+['sub-festm2024', 'Fest-M 2024',             17, 27],
+['sub-festm2023', 'Fest-M 2023',             17, 27],
+['sub-icmc2023',  'ICMC 2023',               17, 27],
+['sub-dicmf2023', 'DICMF 2023',              17, 27],
+['sub-syzygy',    'SYZYGY',                  17, 27],
+['sub-iloveyou',  'I Love You, Customers :)',17, 27],
+['sub-plantcare', 'PlantCare Simulator',     17, 27],
+['sub-doorman',   'DoorMan',                 17, 27],
+['sub-hana',      'Hana : Starting Over',    17, 27],
+  ];
+  defs.forEach(([id, label, fs, bh]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const svg  = buildSVG(label, fs, bh, true);
+    const svgW = parseInt(svg.getAttribute('width'));
+    el.style.width = (svgW + 28) + 'px';
+    el.appendChild(svg);
+  });
+}
+function setupContactBars() {
+  const defs = [
+    ['contact-email',     'o3oq3qo3o@gmail.com',     17, 27],
+    ['contact-instagram', '@ilconglee', 17, 27],
+  ];
+
+  defs.forEach(([id, label, fs, bh]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const svg  = buildSVG(label, fs, bh, true);
+    const svgW = parseInt(svg.getAttribute('width'), 10);
+
+    el.style.width = (svgW + 28) + 'px';
+    el.appendChild(svg);
+  });
+}
+
+/* ================================================================
+   SECTION PANEL TOGGLE
+================================================================ */
+let currentSection = null;
+
+function unpinBar(secId) {
+  const el = document.querySelector(`.nav-bar[data-section="${secId}"], .nav-circle[data-section="${secId}"]`);
+  if (!el) return;
+  const s = el.querySelector('svg');
+  if (s) animBar(s, 'out');
+}
+
+function toggleSection(secId) {
+  if (secId === 'hash') return;
+  if (currentSection === secId) {
+    closePanel(secId);
+    unpinBar(secId);   // section closed → let text animate out
+    currentSection = null;
+  } else {
+    if (currentSection) {
+      closePanel(currentSection);
+      unpinBar(currentSection);  // switch → unpin old bar
+    }
+    openPanel(secId);
+    currentSection = secId;
+    // bar text was already animated in by mouseenter; just keep it pinned
+  }
+}
+
+function openPanel(secId) {
+  const panel = document.getElementById('panel-' + secId);
+  if (!panel) return;
+
+  // Cancel any in-flight close
+  if (panel._closeTimer) { clearTimeout(panel._closeTimer); panel._closeTimer = null; }
+  if (panel._closeHandler) {
+    panel.removeEventListener('transitionend', panel._closeHandler);
+    panel._closeHandler = null;
+  }
+
+  panel.classList.add('open');    // enables display:block via CSS rule
+  void panel.offsetHeight;       // synchronous reflow → browser renders opacity:0 state
+  panel.classList.add('visible');// triggers CSS transition opacity:0→1
+}
+
+function closePanel(secId) {
+  const panel = document.getElementById('panel-' + secId);
+  if (!panel || !panel.classList.contains('open')) return;
+
+  panel.classList.remove('visible');
+
+  function hidePanel() {
+    panel.classList.remove('open');
+    panel._closeTimer   = null;
+    panel._closeHandler = null;
+  }
+
+  panel._closeHandler = function(e) {
+    // Only act on the opacity property to avoid double-firing (opacity + transform)
+    if (e.propertyName !== 'opacity') return;
+    clearTimeout(panel._closeTimer);
+    panel.removeEventListener('transitionend', panel._closeHandler);
+    hidePanel();
+  };
+
+  panel.addEventListener('transitionend', panel._closeHandler);
+  // Fallback if transitionend never fires (e.g., reduced-motion, display:none, etc.)
+  panel._closeTimer = setTimeout(() => {
+    if (panel._closeHandler) {
+      panel.removeEventListener('transitionend', panel._closeHandler);
+    }
+    hidePanel();
+  }, 600);
+}
+
+/* ================================================================
+   MOBILE TOUCH HANDLING
+================================================================ */
+function setupMobileTouch() {
+  document.querySelectorAll('.nav-bar[data-section], .nav-circle[data-section]').forEach(el => {
+    el.addEventListener('touchend', e => {
+      e.preventDefault();
+      const sec = el.dataset.section;
+      if (sec === 'hash') {
+        el.classList.remove('wiggling');
+        void el.offsetWidth;
+        el.classList.add('wiggling');
+        el.addEventListener('animationend', () => el.classList.remove('wiggling'), { once: true });
+        return;
+      }
+      // On touch: trigger bar animation then toggle content
+      const svg = el.querySelector('svg');
+      if (svg) animBar(svg, 'in');
+      toggleSection(sec);
+    });
+  });
+}
+
+/* ================================================================
+   BOOT — wait for Google Fonts before measuring character widths
+================================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  document.fonts.ready.then(() => {
+    setupNavBars();
+    setupSubBars();
+    setupContactBars();
+    setupMobileTouch();
+  });
+});
+</script>
+</body>
+</html>

@@ -781,7 +781,7 @@ function drawThread() {
   ctxFront.clearRect(0, 0, canvasFront.width, canvasFront.height);
 
   if (isMobile() || !threadInit) return;
-pinThreadHeads();
+
   /*
     뒤쪽 실: 바늘 SVG 뒤에 그려짐.
     바늘 몸통에 가려지므로 자연스럽게 뒤쪽 실처럼 보인다.
@@ -865,7 +865,7 @@ function tokenise(label, fs, barH) {
   // With dominant-baseline="central" at y = barH/2, baseline ≈ barH/2 + fs*0.35
   const baseline   = barH / 2 + fs * 0.35;
   // Colon dot positions (used for :) substitution)
-  const COLON_Y_OFFSET = 2;
+  const COLON_Y_OFFSET = 3;
 
   const colonTopY  = baseline - fs * 0.65 + COLON_Y_OFFSET;
   const colonBotY  = baseline - fs * 0.28 + COLON_Y_OFFSET;
@@ -955,9 +955,9 @@ function buildSVG(label, fs, barH, isStatic) {
   // Per-character stagger: 100ms between each char (completes before next starts)
   const CHAR_DELAY = 0.1;
   const xHalf = fs * 0.05;   // half-size of × arm
-  const SW    = 0.6;          // thin stroke — traces glyph outline cleanly
-  const DA    = '3 4';        // dash 3px, gap 4px — clearly separated stitches
-  const XW    = 0.7;          // xmark line width
+  const SW    = 0.8;          // thin stroke — traces glyph outline cleanly
+  const DA    = '3 2';        // dash 3px, gap 4px — clearly separated stitches
+  const XW    = 0.8;          // xmark line width
 
   tokens.forEach(tok => {
     if (tok.kind === 'char') {

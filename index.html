@@ -183,6 +183,13 @@
   column-gap: 36px;
   row-gap: 0px;
 }
+.education-text {
+  font-family: 'Bodoni Moda', Georgia, serif;
+  font-size: 15px;
+  line-height: 27px;
+  flex: 1;
+  min-width: 0;
+}
 
 .entry-row {
   display: flex;
@@ -231,8 +238,11 @@
     }
 
     /* ── Contact ────────────────────────────────────────────────── */
-    .contact-list { display: flex; flex-direction: column; gap: 16px; }
-    .contact-bar {
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 46px;
+}    .contact-bar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -313,6 +323,15 @@
   <!-- A. IlCong Lee -->
   <div class="section-panel" id="panel-ilcong">
     <div class="section-body">
+
+        <div class="skill-row">
+    <div class="sub-bar" id="sub-education"></div>
+    <div class="education-text">
+      <div>Korea National University of Arts — M.A. in Musical Technology</div>
+      <div>Sookmyung Women's University — B.M. in Composition</div>
+    </div>
+  </div>
+
       <div class="skill-row">
         <div class="sub-bar" id="sub-skills"></div>
         <div class="skill-items">
@@ -605,6 +624,46 @@ const frontNodes = Array.from({ length: FRONT_NODES }, () => ({
 }));
 
 let threadInit = false;
+let lastPinX = null;
+let lastPinY = null;
+
+function pinThreadHeads() {
+  const p = getThreadPinPoint();
+
+  backNodes[0].x  = p.x;
+  backNodes[0].y  = p.y;
+  backNodes[0].px = p.x;
+  backNodes[0].py = p.y;
+
+  frontNodes[0].x  = p.x;
+  frontNodes[0].y  = p.y;
+  frontNodes[0].px = p.x;
+  frontNodes[0].py = p.y;
+
+  return p;
+}
+
+function resetThreadAtNeedle() {
+  const p = getThreadPinPoint();
+
+  for (let i = 0; i < BACK_NODES; i++) {
+    backNodes[i].x  = p.x;
+    backNodes[i].y  = p.y + i * BACK_SEG_LEN;
+    backNodes[i].px = backNodes[i].x;
+    backNodes[i].py = backNodes[i].y;
+  }
+
+  for (let i = 0; i < FRONT_NODES; i++) {
+    frontNodes[i].x  = p.x + i * FRONT_SEG_LEN * 0.95;
+    frontNodes[i].y  = p.y + i * FRONT_SEG_LEN * 0.25;
+    frontNodes[i].px = frontNodes[i].x;
+    frontNodes[i].py = frontNodes[i].y;
+  }
+
+  lastPinX = p.x;
+  lastPinY = p.y;
+  threadInit = true;
+}
 
 function initThreadPhysics() {
   const p = getThreadPinPoint();
@@ -670,29 +729,37 @@ function satisfyChain(chain, segLen) {
 
 function stepThreadPhysics() {
   if (mouseX < -200 || mouseY < -200) return;
-  if (!threadInit) initThreadPhysics();
+
+  if (!threadInit) {
+    resetThreadAtNeedle();
+    return;
+  }
 
   const p = getThreadPinPoint();
 
-  /*
-    바늘귀의 딱 한 점만 고정.
-    고정선이 길게 생기지 않게 두 체인의 0번 노드를 같은 점에 묶는다.
-  */
-  backNodes[0].x  = p.x;
-  backNodes[0].y  = p.y;
-  backNodes[0].px = p.x;
-  backNodes[0].py = p.y;
+  if (lastPinX !== null && lastPinY !== null) {
+    const dx = p.x - lastPinX;
+    const dy = p.y - lastPinY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
 
-  frontNodes[0].x  = p.x;
-  frontNodes[0].y  = p.y;
-  frontNodes[0].px = p.x;
-  frontNodes[0].py = p.y;
+    if (dist > 180) {
+      resetThreadAtNeedle();
+      return;
+    }
+  }
+
+  lastPinX = p.x;
+  lastPinY = p.y;
+
+  pinThreadHeads();
 
   stepChain(backNodes, DAMPING, GRAVITY);
   stepChain(frontNodes, DAMPING, GRAVITY * 0.65);
 
   satisfyChain(backNodes, BACK_SEG_LEN);
   satisfyChain(frontNodes, FRONT_SEG_LEN);
+
+  pinThreadHeads();
 }
 
 function drawChain(ctx, chain) {
@@ -714,7 +781,7 @@ function drawThread() {
   ctxFront.clearRect(0, 0, canvasFront.width, canvasFront.height);
 
   if (isMobile() || !threadInit) return;
-
+pinThreadHeads();
   /*
     뒤쪽 실: 바늘 SVG 뒤에 그려짐.
     바늘 몸통에 가려지므로 자연스럽게 뒤쪽 실처럼 보인다.
@@ -1069,6 +1136,7 @@ function setupNavBars() {
 ================================================================ */
 function setupSubBars() {
   const defs = [
+  ['sub-education', 'Education',               17, 27],
     ['sub-skills',    'Skills',                  17, 27],
 ['sub-tools',     'Tools',                   17, 27],
 ['sub-festm2026', 'Fest-M 2026',             17, 27],

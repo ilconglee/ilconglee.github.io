@@ -86,6 +86,8 @@
       flex-shrink: 0;
     }
     .nav-bar svg { display: block; overflow: visible; shape-rendering: auto; }
+    /* 데스크톱에서는 slot 이 레이아웃에 관여하지 않는다 */
+    .nav-slot { display: contents; }
 
     /* ── Black circle ──────────────────────────────────────────── */
     .nav-circle {
@@ -368,29 +370,41 @@
       body { cursor: auto; }
       #needle-svg, #thread-canvas-back, #thread-canvas-front { display: none; }
 
-      /* 검은 박스: 평소엔 세워두고, 누른 것만 눕는다. 전부 가운데 정렬 */
+      /* 검은 박스: 왼쪽에 세워두고, 누른 것만 회전해서 눕는다 */
       #header {
         position: relative;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
         justify-content: flex-start;
         gap: 10px;
         padding: 24px 20px 0;
         overflow: visible;
       }
+      /* slot 이 자리를 잡고, 바는 그 안에서 회전만 한다 */
+      .nav-slot {
+        display: block;
+        position: relative;
+        width: 27px;
+        height: var(--bar-len);
+        flex-shrink: 0;
+        transition: width 0.35s ease-out, height 0.35s ease-out;
+      }
+      .nav-slot.open-slot { width: var(--bar-len); height: 27px; }
+
       .nav-bar {
-        width: 27px !important;        /* JS 인라인 width 를 덮어씀 */
-        height: var(--bar-len);        /* 가로일 때의 길이를 그대로 세로로 */
-        padding: 0;
-        transition: width 0.3s ease-out, height 0.3s ease-out;
-      }
-      .nav-bar svg { display: none; }  /* 세워둔 동안은 글자를 감춘다 */
-      .nav-bar.open-bar {
-        width: var(--bar-len) !important;
+        position: absolute;
+        top: 0; left: 0;
+        width: var(--bar-len) !important;   /* JS 인라인 width 를 덮어씀 */
         height: 27px;
-        padding: 0 14px;
+        transform: translateY(var(--bar-len)) rotate(-90deg);
+        transform-origin: left top;
+        transition: transform 0.35s ease-out;
       }
-      .nav-bar.open-bar svg { display: block; }
+      .nav-slot.open-slot .nav-bar { transform: none; }
+      .nav-bar svg { display: none; }               /* 세워둔 동안은 글자를 감춘다 */
+      .nav-slot.open-slot .nav-bar svg { display: block; }
+
+      .nav-circle { position: absolute; top: 0; left: 0; }
       .nav-bar, .nav-circle { cursor: pointer; }
       .contact-link { cursor: pointer; }
 
@@ -1236,8 +1250,14 @@ function setupNavBars() {
     const svg   = buildSVG(label, 15, 27, false);  // 17 ≈ 27 * 0.65
     const svgW  = parseInt(svg.getAttribute('width'));
     barEl.style.width = (svgW + 28) + 'px';
-    barEl.style.setProperty('--bar-len', (svgW + 28) + 'px');  // 모바일에서 세로 길이로 재사용
     barEl.appendChild(svg);
+
+    // 회전해도 이웃과 겹치지 않도록 자리를 예약하는 slot 으로 감싼다
+    const slot = document.createElement('div');
+    slot.className = 'nav-slot';
+    slot.style.setProperty('--bar-len', (svgW + 28) + 'px');
+    barEl.parentNode.insertBefore(slot, barEl);
+    slot.appendChild(barEl);
 
     let active = false;
 
@@ -1260,6 +1280,12 @@ function setupNavBars() {
   const hashEl  = document.getElementById('bar-hash');
   const hashSVG = buildSVG('#', 17, 27, false);
   hashEl.appendChild(hashSVG);
+
+  const hashSlot = document.createElement('div');
+  hashSlot.className = 'nav-slot';
+  hashSlot.style.setProperty('--bar-len', '27px');
+  hashEl.parentNode.insertBefore(hashSlot, hashEl);
+  hashSlot.appendChild(hashEl);
   let hashActive = false;
 
   hashEl.addEventListener('mouseenter', () => {
@@ -1287,6 +1313,8 @@ function unpinBar(secId) {
   const el = document.querySelector(`.nav-bar[data-section="${secId}"], .nav-circle[data-section="${secId}"]`);
   if (!el) return;
   el.classList.remove('open-bar');
+  const slot = el.closest('.nav-slot');
+  if (slot) slot.classList.remove('open-slot');
   const s = el.querySelector('svg');
   if (s) animBar(s, 'out');
 }
@@ -1296,9 +1324,11 @@ function pinBar(secId) {
   const el = document.querySelector(`.nav-bar[data-section="${secId}"], .nav-circle[data-section="${secId}"]`);
   if (!el) return;
   el.classList.add('open-bar');
+  const slot = el.closest('.nav-slot');
+  if (slot) slot.classList.add('open-slot');
   if (!isMobile()) return;
   const s = el.querySelector('svg');
-  if (s) setTimeout(() => animBar(s, 'in'), 300);   // 눕는 애니메이션이 끝난 뒤
+  if (s) setTimeout(() => animBar(s, 'in'), 380);   // 회전이 끝난 뒤 글자 등장
 }
 
 function toggleSection(secId) {

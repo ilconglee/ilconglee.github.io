@@ -6,7 +6,7 @@
   <title>IlCong Lee</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400&family=Comic+Relief:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400&family=IBM+Plex+Sans+KR:wght@200;300;400&family=Noto+Sans+SC:wght@200;300;400&display=swap" rel="stylesheet">
 
   <style>
     /* ── Design tokens ─────────────────────────────────────────── */
@@ -22,7 +22,8 @@
     body {
       background: var(--bg);
       color: var(--body-text);
-      font-family: 'Bodoni Moda', Georgia, serif;
+      font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
+      font-weight: 200;        /* 본문 — 구분선(.dash)은 한 단계 굵은 300 */
       min-height: 100%;
       cursor: none;
       overflow-x: hidden;
@@ -144,96 +145,164 @@
   opacity: 1;
 }
 
-    /* ── Sub-bar (always-on stitching label) ───────────────────── */
-    .sub-bar {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bar);
-      height: 27px;
-      padding: 0 14px;
-      border-radius: 0px;
-      flex-shrink: 0;
-    }
-    .sub-bar svg { display: block; overflow: visible; shape-rendering: auto; }
-
     /* ── Section content layout ────────────────────────────────── */
     .section-body { padding-bottom: 48px; }
 
-    .skill-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
-  margin-bottom: 46px;
-}
-
-.skill-row .sub-bar {
-  margin-top: 0;
-}
-
-.skill-items {
-  font-family: 'Bodoni Moda', Georgia, serif;
-  font-size: 15px;
+/* ── IlCong Lee: 항목명 / 내용 — 2단, 전부 왼쪽 정렬 ── */
+.info-list {
+  font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
+  font-size: 13px;
   line-height: 27px;
-  flex: 1;
-  min-width: 0;
+}
+#panel-ilcong .info-row {
+  --col-label: 140px;   /* 첫 단 폭 */
+  --info-gap:   22px;   /* 두 단 사이 여백 */
 
+  display: grid;
+  grid-template-columns: var(--col-label) var(--info-gap) 1fr;
+  align-items: start;
+  margin-bottom: 10px;   /* 구분선이 한 줄을 차지하므로 추가 여백 없음 */
+}
+/* Education처럼 여러 줄인 내용: 줄 간격을 다른 섹션의 행 간격과 동일하게 */
+#panel-ilcong .info-content > div + div { margin-top: 10px; }
+#panel-ilcong .info-label   { grid-column: 1; text-align: left; }
+#panel-ilcong .info-content { grid-column: 3; min-width: 0; text-align: left; }
+.info-tags {
   display: flex;
   flex-wrap: wrap;
   column-gap: 36px;
   row-gap: 0px;
 }
-.education-text {
-  font-family: 'Bodoni Moda', Georgia, serif;
-  font-size: 15px;
-  line-height: 27px;
-  flex: 1;
-  min-width: 0;
+/* 자기소개 — Tools 줄의 Arduino가 끝나는 지점에서 줄바꿈 */
+#panel-ilcong .info-bio {
+  max-width: 980px;
+}
+/* 구분선 — 본문보다 한 단계 굵게 */
+.dash {
+  font-weight: 300;
+}
+/* IlCong Lee: 구분선이 항목 아래 한 줄을 통째로 차지 */
+#panel-ilcong .dash { grid-column: 1 / -1; }
+
+/* ── Performances / Collaborations 공통 단 규격 ──────────────────
+   두 섹션이 같은 x 위치에서 시작하도록 트랙을 공유한다.
+   Performances는 '역할' 단이 없으므로 제목이 그 자리까지 이어진다. */
+#panel-performances .info-list,
+.collab-list {
+  overflow-x: auto;      /* 좁아지면 줄바꿈 대신 가로 스크롤 */
+  padding-bottom: 8px;   /* 가로 스크롤바 자리 */
+}
+#panel-performances .info-list::-webkit-scrollbar,
+.collab-list::-webkit-scrollbar { height: 3px; }
+#panel-performances .info-list::-webkit-scrollbar-thumb,
+.collab-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+#panel-performances .info-row,
+.collab-row {
+  /* 각 단의 폭 */
+  --col-year:  140px;
+  --col-title: 240px;
+  --col-role:  180px;
+  /* 단 사이 여백 — 각각 따로 조절 */
+  --gap-1: 22px;   /* 날짜 ↔ 제목 */
+  --gap-2: 48px;   /* 제목 ↔ 역할 */
+  --gap-3: 62px;   /* 역할 ↔ 장소 */
+
+  display: grid;
+  grid-template-columns:
+    var(--col-year)  var(--gap-1)
+    var(--col-title) var(--gap-2)
+    var(--col-role)  var(--gap-3)
+    max-content;
+  column-gap: 0;
+  align-items: start;
+  width: max-content;    /* 내용만큼 늘어남 — 절대 접히지 않음 */
+  margin-bottom: 10px;
+}
+#panel-performances .info-row > span,
+.collab-row > span {
+  text-align: left;
+  white-space: nowrap;   /* 한 줄 유지 → 모든 행 높이가 37px로 동일 */
 }
 
-.entry-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
-  margin-bottom: 46px;
+/* 날짜 */
+#panel-performances .info-year,
+.collab-year {
+  grid-column: 1;
+  font-variant-numeric: tabular-nums;
 }
+/* 제목 — Performances는 '역할' 단까지 걸쳐 씀 */
+#panel-performances .info-title { grid-column: 3 / 6; }
+.collab-title                   { grid-column: 3; }
+/* 역할 — Collaborations 전용 */
+.collab-role { grid-column: 5; }
+/* 장소 */
+#panel-performances .info-place,
+.collab-place { grid-column: 7; }
 
-.entry-row .sub-bar {
-  margin-top: 0;
-}
-
-.entry-text {
-  font-family: 'Bodoni Moda', Georgia, serif;
-  font-size: 15px;
+/* ── Collaborations 목록 서체 ─────────────────────────────────── */
+.collab-list {
+  font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
+  font-size: 13px;
   line-height: 27px;
 }
 
     /* ── Works ─────────────────────────────────────────────────── */
-    .work-item { margin-bottom: 68px; }
-    .work-title {
-      font-family: 'Bodoni Moda', Georgia, serif;
-      font-size: 15px;
-      line-height: 1.5;
-      margin-bottom: 14px;
+    .work-item {
+      --work-w: min(56%, 680px);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      margin-bottom: 72px;
     }
-    .work-title a { color: inherit; text-decoration: none; }
-    .work-title a:hover { text-decoration: underline; }
-    .work-thumb-link { display: inline-block; line-height: 0; }
+
+    /* Title line above the thumbnail — name left, year right-aligned to thumb edge */
+    .work-title {
+      width: var(--work-w);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 27px;   /* 다른 섹션과 동일 — 첫 줄 시작 위치가 맞음 */
+      letter-spacing: 0.01em;
+      margin-bottom: 0;
+    }
+    .work-name {
+      flex: 0 1 auto;
+      min-width: 0;
+      color: inherit;
+      text-decoration: none;
+    }
+    a.work-name:hover { text-decoration: underline; }
+    .work-year {
+      flex: 0 0 auto;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Thumbnail — large, like ryojiikeda.com */
+    .work-thumb-link,
+    .work-coming-soon { width: var(--work-w); }
+    .work-thumb-link { display: block; line-height: 0; }
     .work-thumb {
       display: block;
-      width: 220px; height: 124px;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      height: auto;
       object-fit: cover;
       border: 1px solid #ddd;
     }
     .work-coming-soon {
-      width: 220px; height: 124px;
+      aspect-ratio: 16 / 9;
       background: #f2f2f2;
       border: 1px solid #ddd;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Bodoni Moda', Georgia, serif;
-      font-size: 15px;
+      font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
+      font-size: 13px;
       color: #555;
     }
 
@@ -241,25 +310,19 @@
 .contact-list {
   display: flex;
   flex-direction: column;
-  gap: 46px;
-}    .contact-bar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bar);
-  height: 27px;
-  padding: 0 14px;
-  border-radius: 0px;
+  align-items: flex-start;
+  gap: 10px;   /* Performances / Collaborations 행 간격과 동일 */
+  font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 27px;
+}
+.contact-link {
+  color: inherit;
   text-decoration: none;
-  cursor: pointer;
-  flex-shrink: 0;
 }
-
-.contact-bar svg {
-  display: block;
-  overflow: visible;
-  shape-rendering: auto;
-}
+.contact-link:hover { text-decoration: underline; }
+/* 구분선은 내용에 바로 붙음 — IlCong Lee / Performances / Collaborations와 동일 */
+.contact-list .dash { margin-top: -10px; }
 
     /* ── Mobile ─────────────────────────────────────────────────── */
     @media (max-width: 768px) {
@@ -281,7 +344,21 @@
         overflow-y: visible;
       }
       .nav-bar, .nav-circle { cursor: pointer; }
-      .contact-bar { cursor: pointer; }
+      .contact-link { cursor: pointer; }
+
+      /* IlCong Lee만 세로로 쌓기 — Performances / Collaborations는 가로 스크롤 유지 */
+      #panel-ilcong .info-row {
+        grid-template-columns: 1fr;
+        margin-bottom: 37px;
+      }
+      #panel-ilcong .info-label,
+      #panel-ilcong .info-content { grid-column: 1; }
+
+      /* Works: full-width thumbnails on narrow screens */
+      .work-item {
+        --work-w: 100%;
+        margin-bottom: 48px;
+      }
     }
   </style>
 </head>
@@ -309,11 +386,11 @@
 
 <!-- Fixed header -->
 <header id="header">
-  <div class="nav-bar"    id="bar-ilcong"       data-section="ilcong"       data-label="IlCong Lee"></div>
-  <div class="nav-bar"    id="bar-performances" data-section="performances" data-label="Performances"></div>
-  <div class="nav-bar"    id="bar-projects"     data-section="projects"     data-label="Projects"></div>
-  <div class="nav-bar"    id="bar-works"        data-section="works"        data-label="Works"></div>
-  <div class="nav-bar"    id="bar-contact"      data-section="contact"      data-label="Contact"></div>
+  <div class="nav-bar"    id="bar-ilcong"       data-section="ilcong"       data-label="ILCONG LEE"></div>
+  <div class="nav-bar"    id="bar-performances" data-section="performances" data-label="PERFORMANCES"></div>
+  <div class="nav-bar"    id="bar-collaborations"     data-section="collaborations"     data-label="COLLABORATIONS"></div>
+  <div class="nav-bar"    id="bar-works"        data-section="works"        data-label="WORKS"></div>
+  <div class="nav-bar"    id="bar-contact"      data-section="contact"      data-label="CONTACT"></div>
   <div class="nav-circle" id="bar-hash"         data-section="hash"         data-label="#"></div>
 </header>
 
@@ -323,40 +400,53 @@
   <!-- A. IlCong Lee -->
   <div class="section-panel" id="panel-ilcong">
     <div class="section-body">
+      <div class="info-list">
 
-        <div class="skill-row">
-    <div class="sub-bar" id="sub-education"></div>
-    <div class="education-text">
-      <div>Korea National University of Arts — M.A. in Musical Technology</div>
-      <div>Sookmyung Women's University — B.M. in Composition</div>
-    </div>
-  </div>
+        <div class="info-row">
+          <span class="info-label">Education</span>
+          <div class="info-content">
+            <div>Korea National University of Arts — M.A. in Musical Technology <span class="dash">- - - - - - - - - -</span></div>
+            <div>Sookmyung Women's University — B.M. in Composition <span class="dash">- - - - - - - - - -</span></div>
+          </div>
+          <span class="dash">- - - - - - - - - -</span>
+        </div>
 
-      <div class="skill-row">
-        <div class="sub-bar" id="sub-skills"></div>
-        <div class="skill-items">
-  <span>LiveElectronics</span>
-  <span>Multichannel</span>
-  <span>Acoustics</span>
-  <span>Recording</span>
-  <span>Mixing/Mastering</span>
-  <span>SoundDesign</span>
-  <span>AudioVisual</span>
-  <span>AmbienceSound</span>
-  <span>Ambient music</span>
-</div>
-      </div>
-      <div class="skill-row">
-        <div class="sub-bar" id="sub-tools"></div>
-        <div class="skill-items">
-  <span>MAX/MSP/Jitter</span>
-  <span>RNBO</span>
-  <span>SuperCollider</span>
-  <span>AbletonLive</span>
-  <span>Protools</span>
-  <span>Sibelius</span>
-  <span>Arduino</span>
-</div>
+        <div class="info-row">
+          <span class="info-label">Skills</span>
+          <div class="info-content info-tags">
+            <span>LiveElectronics</span>
+            <span>Multichannel</span>
+            <span>Acoustics</span>
+            <span>Recording</span>
+            <span>Mixing/Mastering</span>
+            <span>SoundDesign</span>
+            <span>AudioVisual</span>
+            <span>AmbienceSound</span>
+            <span>AmbientMusic</span>
+          </div>
+          <span class="dash">- - - - - - - - - -</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">Tools</span>
+          <div class="info-content info-tags">
+            <span>MAX/MSP/Jitter</span>
+            <span>RNBO</span>
+            <span>SuperCollider</span>
+            <span>AbletonLive</span>
+            <span>Protools</span>
+            <span>Sibelius</span>
+            <span>Arduino</span>
+          </div>
+          <span class="dash">- - - - - - - - - -</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">Wonbin Lee</span>
+          <div class="info-content info-bio">Wonbin Lee is a sound artist and composer who designs sound. Textiles serve as a language that runs throughout her practice. Finding a musical language in women's domestic labor—from the pounding stone and weaving to the sewing machine—she uses sound to make perceptible the time and traces that often go unnoticed in everyday life.</div>
+          <span class="dash">- - - - - - - - - -</span>
+        </div>
+
       </div>
     </div>
   </div>
@@ -364,52 +454,79 @@
   <!-- B. Performances -->
   <div class="section-panel" id="panel-performances">
     <div class="section-body">
-      <div class="entry-row">
-        <div class="sub-bar" id="sub-festm2026"></div>
-        <div class="entry-text">인고침 (忍苦砧) for 다듬잇돌 and Live Electronics (2026)</div>
-      </div>
-      <div class="entry-row">
-        <div class="sub-bar" id="sub-festm2024"></div>
-        <div class="entry-text">'Trolley' for Tuba and Live Electronics (2023)</div>
-      </div>
-      <div class="entry-row">
-        <div class="sub-bar" id="sub-festm2023"></div>
-        <div class="entry-text">'The Little Voice In My Head' for Violin and Electronics (2023)</div>
-      </div>
-      <div class="entry-row">
-        <div class="sub-bar" id="sub-icmc2023"></div>
-        <div class="entry-text">'The Little Voice In My Head' for Violin and Electronics (2023)</div>
-      </div>
-      <div class="entry-row">
-        <div class="sub-bar" id="sub-dicmf2023"></div>
-        <div class="entry-text">'The Little Voice In My Head' for Violin and Electronics (2023)</div>
+      <div class="info-list">
+        <div class="info-row">
+          <span class="info-year">Sep 16, 2026</span>
+          <span class="info-title">[인고침 忍苦砧] for 다듬잇돌 and Live Electronics</span>
+          <span class="info-place">Fest-M 2026, Chamber Hall, Yonsei University, Seoul, KR <span class="dash">- - - - - - - - - -</span></span>
+        </div>
+        <div class="info-row">
+          <span class="info-year">Sep 4, 2024</span>
+          <span class="info-title">[Trolley] for Tuba and Live Electronics</span>
+          <span class="info-place">Fest-M 2024, CKL Stage, Seoul, KR <span class="dash">- - - - - - - - - -</span></span>
+        </div>
+        <div class="info-row">
+          <span class="info-year">May 14, 2023</span>
+          <span class="info-title">[The Little Voice In My Head] for Violin and Electronics</span>
+          <span class="info-place">Fest-M 2023, Seoul National University of Education, Seoul, KR <span class="dash">- - - - - - - - - -</span></span>
+        </div>
+        <div class="info-row">
+          <span class="info-year">Oct 18, 2023</span>
+          <span class="info-title">[The Little Voice In My Head] for Violin and Electronics</span>
+          <span class="info-place">ICMC 2023, School of Music, The Chinese University of Hong Kong, Shenzhen, HK <span class="dash">- - - - - - - - - -</span></span>
+        </div>
+        <div class="info-row">
+          <span class="info-year">Nov 11, 2023</span>
+          <span class="info-title">[The Little Voice In My Head] for Violin and Electronics</span>
+          <span class="info-place">DICMF 2023, Suchang Hall, Daegu Arts Factory, Daegu, KR <span class="dash">- - - - - - - - - -</span></span>
+        </div>
+        <span class="dash">- - - - - - - - - -</span>
       </div>
     </div>
   </div>
 
-  <!-- C. Projects -->
-  <div class="section-panel" id="panel-projects">
+  <!-- C. Collaborations -->
+  <div class="section-panel" id="panel-collaborations">
     <div class="section-body">
-      <div class="entry-row">
-        <div class="sub-bar" id="sub-syzygy"></div>
-        <div class="entry-text">Art game Prototype (2025) – Arts Korea Lab, RNBO Sound System Develop / BGM</div>
+      <div class="collab-list">
+        <div class="collab-row">
+          <span class="collab-year">Dec 15 - 18, 2025</span>
+          <span class="collab-title">[I Love You, Customers :)] VR Game</span>
+          <span class="collab-role">Sound</span>
+          <span class="collab-place">SIGGRAPH ASIA, Convention and Exhibition Center, HK <span class="dash">- - - - - - - - - -</span></span>
+        </div>
+        <div class="collab-row">
+          <span class="collab-year">Dec 4 - 6, 2025</span>
+          <span class="collab-title">[SYZYGY] Art game</span>
+          <span class="collab-role">Sound System Develop / BGM</span>
+          <span class="collab-place">Arts Korea Lab, Seoul, KR <span class="dash">- - - - - - - - - -</span></span>
+        </div>
+        <div class="collab-row">
+          <span class="collab-year">2025</span>
+          <span class="collab-title">[PlantCare Simulator] VR Game</span>
+          <span class="collab-role">BGM</span>
+          <span class="collab-place">VCU, VA, US <span class="dash">- - - - - - - - - -</span></span>
+        </div>
+        <div class="collab-row">
+          <span class="collab-year">Jan 9 - 11, 2025</span>
+          <span class="collab-title">[Hana : Starting Over] XR Musical</span>
+          <span class="collab-role">Sound design</span>
+          <span class="collab-place">CKL Stage, Seoul, KR <span class="dash">- - - - - - - - - -</span></span>
+        </div>
+        <div class="collab-row">
+          <span class="collab-year">Dec 4 - 6, 2024</span>
+          <span class="collab-title">[Hana : Starting Over] XR Musical</span>
+          <span class="collab-role">Sound design</span>
+          <span class="collab-place">SIGGRAPH ASIA, International Forum, Tokyo, JP <span class="dash">- - - - - - - - - -</span></span>
+        </div>
+        <div class="collab-row">
+          <span class="collab-year">Oct 10, 2024</span>
+          <span class="collab-title">[DoorMan] XR Musical</span>
+          <span class="collab-role">Sound design</span>
+          <span class="collab-place">Stage 66, Seoul, KR <span class="dash">- - - - - - - - - -</span></span>
+        </div>
       </div>
-      <div class="entry-row">
-        <div class="sub-bar" id="sub-iloveyou"></div>
-        <div class="entry-text">VR Game (2025) – SIGGRAPH ASIA, Sound</div>
-      </div>
-      <div class="entry-row">
-        <div class="sub-bar" id="sub-plantcare"></div>
-        <div class="entry-text">VR Game (2025) – VCU, BGM</div>
-      </div>
-      <div class="entry-row">
-        <div class="sub-bar" id="sub-doorman"></div>
-        <div class="entry-text">XR Musical (2024) – Stage 66, Sound design</div>
-      </div>
-      <div class="entry-row">
-        <div class="sub-bar" id="sub-hana"></div>
-        <div class="entry-text">XR Musical (2024) – CKL Stage, Sound design</div>
-      </div>
+      <span class="dash">- - - - - - - - - -</span>
     </div>
   </div>
 
@@ -419,86 +536,102 @@
 
       <div class="work-item">
         <div class="work-title">
-          <a href="https://youtu.be/H0Ah2hXy-88" target="_blank" rel="noopener noreferrer">
-            인고침 (忍苦砧) for 다듬잇돌 and Live Electronics (2026)
-          </a>
+          <a class="work-name" href="https://youtu.be/H0Ah2hXy-88" target="_blank" rel="noopener noreferrer">인고침 (忍苦砧) for 다듬잇돌 and Live Electronics</a>
+          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2026</span>
         </div>
         <a class="work-thumb-link" href="https://youtu.be/H0Ah2hXy-88" target="_blank" rel="noopener noreferrer">
-          <img class="work-thumb" src="https://img.youtube.com/vi/H0Ah2hXy-88/hqdefault.jpg" alt="인고침" loading="lazy">
+          <img class="work-thumb"
+               src="https://img.youtube.com/vi/H0Ah2hXy-88/maxresdefault.jpg"
+               onerror="this.onerror=null;this.src='https://img.youtube.com/vi/H0Ah2hXy-88/hqdefault.jpg';"
+               alt="인고침" loading="lazy">
         </a>
       </div>
 
       <div class="work-item">
         <div class="work-title">
-          <a href="https://youtu.be/Tch5AWKle9g" target="_blank" rel="noopener noreferrer">
-            '天地人' for One Performer and Sewing Machine with Arduino (2025)
-          </a>
+          <a class="work-name" href="https://youtu.be/Tch5AWKle9g" target="_blank" rel="noopener noreferrer">'天地人' for One Performer and Sewing Machine with Arduino</a>
+          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
         </div>
         <a class="work-thumb-link" href="https://youtu.be/Tch5AWKle9g" target="_blank" rel="noopener noreferrer">
-          <img class="work-thumb" src="https://img.youtube.com/vi/Tch5AWKle9g/hqdefault.jpg" alt="天地人" loading="lazy">
+          <img class="work-thumb"
+               src="https://img.youtube.com/vi/Tch5AWKle9g/maxresdefault.jpg"
+               onerror="this.onerror=null;this.src='https://img.youtube.com/vi/Tch5AWKle9g/hqdefault.jpg';"
+               alt="天地人" loading="lazy">
         </a>
       </div>
 
       <div class="work-item">
         <div class="work-title">
-          <a href="https://youtu.be/GCeSyo8p-6E" target="_blank" rel="noopener noreferrer">
-            'Geliocentric' for 6ch Live Electronics (2024)
-          </a>
+          <a class="work-name" href="https://youtu.be/GCeSyo8p-6E" target="_blank" rel="noopener noreferrer">'Geliocentric' for 6ch Live Electronics</a>
+          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2024</span>
         </div>
         <a class="work-thumb-link" href="https://youtu.be/GCeSyo8p-6E" target="_blank" rel="noopener noreferrer">
-          <img class="work-thumb" src="https://img.youtube.com/vi/GCeSyo8p-6E/hqdefault.jpg" alt="Geliocentric" loading="lazy">
+          <img class="work-thumb"
+               src="https://img.youtube.com/vi/GCeSyo8p-6E/maxresdefault.jpg"
+               onerror="this.onerror=null;this.src='https://img.youtube.com/vi/GCeSyo8p-6E/hqdefault.jpg';"
+               alt="Geliocentric" loading="lazy">
         </a>
       </div>
 
       <div class="work-item">
         <div class="work-title">
-          <a href="https://youtu.be/1Zt9EetgQkI" target="_blank" rel="noopener noreferrer">
-            'Übermensch' for 2ch Tape (2024)
-          </a>
+          <a class="work-name" href="https://youtu.be/1Zt9EetgQkI" target="_blank" rel="noopener noreferrer">'Übermensch' for 2ch Tape</a>
+          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2024</span>
         </div>
         <a class="work-thumb-link" href="https://youtu.be/1Zt9EetgQkI" target="_blank" rel="noopener noreferrer">
-          <img class="work-thumb" src="https://img.youtube.com/vi/1Zt9EetgQkI/hqdefault.jpg" alt="Übermensch" loading="lazy">
+          <img class="work-thumb"
+               src="https://img.youtube.com/vi/1Zt9EetgQkI/maxresdefault.jpg"
+               onerror="this.onerror=null;this.src='https://img.youtube.com/vi/1Zt9EetgQkI/hqdefault.jpg';"
+               alt="Übermensch" loading="lazy">
         </a>
       </div>
 
       <div class="work-item">
         <div class="work-title">
-          <a href="https://youtu.be/iIqCC3MiLvA" target="_blank" rel="noopener noreferrer">
-            [SYZYGY] (2025)
-          </a>
+          <a class="work-name" href="https://youtu.be/iIqCC3MiLvA" target="_blank" rel="noopener noreferrer">[SYZYGY]</a>
+          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
         </div>
         <a class="work-thumb-link" href="https://youtu.be/iIqCC3MiLvA" target="_blank" rel="noopener noreferrer">
-          <img class="work-thumb" src="https://img.youtube.com/vi/iIqCC3MiLvA/hqdefault.jpg" alt="SYZYGY" loading="lazy">
+          <img class="work-thumb"
+               src="https://img.youtube.com/vi/iIqCC3MiLvA/maxresdefault.jpg"
+               onerror="this.onerror=null;this.src='https://img.youtube.com/vi/iIqCC3MiLvA/hqdefault.jpg';"
+               alt="SYZYGY" loading="lazy">
         </a>
       </div>
 
       <!-- No link, Coming Soon -->
       <div class="work-item">
-        <div class="work-title">[I Love You, Customers :)] (2025)</div>
+        <div class="work-title">
+          <span class="work-name">[I Love You, Customers :)]</span>
+          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
+        </div>
         <div class="work-coming-soon">Coming Soon</div>
       </div>
 
       <div class="work-item">
         <div class="work-title">
-          <a href="https://youtube.com/shorts/OUugxilj6i8" target="_blank" rel="noopener noreferrer">
-            [PlantCare Simulator] (2025)
-          </a>
+          <a class="work-name" href="https://youtube.com/shorts/OUugxilj6i8" target="_blank" rel="noopener noreferrer">[PlantCare Simulator]</a>
+          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
         </div>
         <a class="work-thumb-link" href="https://youtube.com/shorts/OUugxilj6i8" target="_blank" rel="noopener noreferrer">
-          <img class="work-thumb" src="https://img.youtube.com/vi/OUugxilj6i8/hqdefault.jpg" alt="PlantCare Simulator" loading="lazy">
+          <img class="work-thumb"
+               src="https://img.youtube.com/vi/OUugxilj6i8/maxresdefault.jpg"
+               onerror="this.onerror=null;this.src='https://img.youtube.com/vi/OUugxilj6i8/hqdefault.jpg';"
+               alt="PlantCare Simulator" loading="lazy">
         </a>
       </div>
-
+      <span class="dash">- - - - - - - - - -</span>
     </div>
   </div>
 
-  <!-- E. Contact — solid white Comic Relief text, no animation, no i/j substitution -->
+  <!-- E. Contact -->
   <div class="section-panel" id="panel-contact">
     <div class="section-body">
       <div class="contact-list">
-  <a class="contact-bar" id="contact-email" href="mailto:o3oq3qo3o@gmail.com"></a>
-  <a class="contact-bar" id="contact-instagram" href="https://instagram.com/ilconglee" target="_blank" rel="noopener noreferrer"></a>
-</div>
+        <a class="contact-link" href="mailto:o3oq3qo3o@gmail.com">o3oq3qo3o@gmail.com</a>
+        <a class="contact-link" href="https://instagram.com/ilconglee" target="_blank" rel="noopener noreferrer">@ilconglee</a>
+        <span class="dash">- - - - - - - - - -</span>
+      </div>
     </div>
   </div>
 
@@ -829,9 +962,9 @@ document.body.appendChild(measSVG);
 
 function measWidth(str, fs) {
   const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  t.setAttribute('font-family', "'Comic Relief', sans-serif");
+  t.setAttribute('font-family', "'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', sans-serif");
   t.setAttribute('font-size', String(fs));
-  t.setAttribute('font-weight', '400');
+  t.setAttribute('font-weight', '300');
   t.textContent = str;
   measSVG.appendChild(t);
   const w = t.getComputedTextLength();
@@ -841,11 +974,7 @@ function measWidth(str, fs) {
 
 /*
   Tokenise a label string for SVG rendering.
-  Rules:
-    - lowercase 'i' → dotless ı + x-mark at dot position
-    - lowercase 'j' → dotless ȷ + x-mark at dot position
-    - ':)' sequence → invisible colon (space reserved) + two x-marks (colon dots) + ')' char
-    - All other chars → normal char
+  모든 글자를 그대로 배치한다 (특수 치환 없음).
 
   barH: total SVG/bar height (for computing baseline from top)
   fs:   font-size in px
@@ -860,77 +989,17 @@ function tokenise(label, fs, barH) {
   let cx = 0;   // running x cursor
   let ci = 0;   // char stagger index
 
-  const LETTER_SPACING = fs * 0.12;
+  const LETTER_SPACING = 0;
 
   // With dominant-baseline="central" at y = barH/2, baseline ≈ barH/2 + fs*0.35
   const baseline   = barH / 2 + fs * 0.35;
-  // Colon dot positions (used for :) substitution)
-  const COLON_Y_OFFSET = 3;
-
-  const colonTopY  = baseline - fs * 0.65 + COLON_Y_OFFSET;
-  const colonBotY  = baseline - fs * 0.28 + COLON_Y_OFFSET;
-
-  let i = 0;
-while (i < label.length) {
-  const ch = label[i];
-
-  // lowercase i → dotless ı + x-mark
-  if (ch === 'i') {
-    const dotless = 'ı';
-    const w = measWidth(dotless, fs);
-
-    tokens.push({ kind: 'char', ch: dotless, x: cx, w, ci });
-
-    tokens.push({
-      kind: 'xmark',
-      cx: cx + w / 2,
-      cy: baseline - fs * 0.68,
-      ci
-    });
-
-    cx += w + LETTER_SPACING;
-    ci++;
-    i++;
-
-  // lowercase j → dotless ȷ + x-mark
-  } else if (ch === 'j') {
-    const dotless = 'ȷ';
-    const w = measWidth(dotless, fs);
-
-    tokens.push({ kind: 'char', ch: dotless, x: cx, w, ci });
-
-    tokens.push({
-      kind: 'xmark',
-      cx: cx + w / 2,
-      cy: baseline - fs * 0.68,
-      ci
-    });
-
-    cx += w + LETTER_SPACING;
-    ci++;
-    i++;
-
-  // colon : → two x-marks
-  } else if (ch === ':') {
-    const cw = measWidth(':', fs);
-    const colonCX = cx + cw / 2;
-
-    tokens.push({ kind: 'xmark', cx: colonCX, cy: colonTopY, ci });
-    tokens.push({ kind: 'xmark', cx: colonCX, cy: colonBotY, ci });
-
-    cx += cw + LETTER_SPACING;
-    ci++;
-    i++;
-
-  // normal characters
-  } else {
-    const w = measWidth(ch, fs);
+  for (let i = 0; i < label.length; i++) {
+    const ch = label[i];
+    const w  = measWidth(ch, fs);
     tokens.push({ kind: 'char', ch, x: cx, w, ci });
     cx += w + LETTER_SPACING;
     ci++;
-    i++;
   }
-}
 
   return { tokens, totalW: cx, charCount: ci };
 }
@@ -954,10 +1023,6 @@ function buildSVG(label, fs, barH, isStatic) {
 
   // Per-character stagger: 100ms between each char (completes before next starts)
   const CHAR_DELAY = 0.1;
-  const xHalf = fs * 0.05;   // half-size of × arm
-  const SW    = 0.8;          // thin stroke — traces glyph outline cleanly
-  const DA    = '3 2';        // dash 3px, gap 4px — clearly separated stitches
-  const XW    = 0.8;          // xmark line width
 
   tokens.forEach(tok => {
     if (tok.kind === 'char') {
@@ -967,14 +1032,10 @@ function buildSVG(label, fs, barH, isStatic) {
       t.setAttribute('x',                String(tok.x));
       t.setAttribute('y',                String(midY));
       t.setAttribute('dominant-baseline','central');
-      t.setAttribute('font-family',      "'Comic Relief', sans-serif");
+      t.setAttribute('font-family',      "'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', sans-serif");
       t.setAttribute('font-size',        String(fs));
-      t.setAttribute('font-weight',      '400');
-      t.setAttribute('fill',             'none');
-      t.setAttribute('stroke',           '#ffffff');
-      t.setAttribute('stroke-width',     String(SW));
-      t.setAttribute('stroke-linecap',   'round');
-      t.setAttribute('stroke-dasharray', DA);
+      t.setAttribute('font-weight',      '300');
+      t.setAttribute('fill',             '#ffffff');
       t.textContent = tok.ch;
 
       if (isStatic) {
@@ -987,34 +1048,6 @@ function buildSVG(label, fs, barH, isStatic) {
       }
       svg.appendChild(t);
 
-    } else /* xmark */ {
-      const delay = isStatic ? 0 : tok.ci * CHAR_DELAY * 0.65 + 0.07;
-      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-      if (isStatic) {
-        g.style.opacity = '1';
-      } else {
-        g.style.opacity = '0';
-        g.dataset.delay = String(delay);
-        g.classList.add('anim-x');
-      }
-
-      // Two diagonal lines forming ×
-      const coords = [
-        [tok.cx - xHalf, tok.cy - xHalf, tok.cx + xHalf, tok.cy + xHalf],
-        [tok.cx + xHalf, tok.cy - xHalf, tok.cx - xHalf, tok.cy + xHalf],
-      ];
-      coords.forEach(([x1, y1, x2, y2]) => {
-        const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        ln.setAttribute('x1', String(x1));
-        ln.setAttribute('y1', String(y1));
-        ln.setAttribute('x2', String(x2));
-        ln.setAttribute('y2', String(y2));
-        ln.setAttribute('stroke',        '#ffffff');
-        ln.setAttribute('stroke-width',  String(XW));
-        ln.setAttribute('stroke-linecap','round');
-        g.appendChild(ln);
-      });
-      svg.appendChild(g);
     }
   });
 
@@ -1132,52 +1165,6 @@ function setupNavBars() {
 }
 
 /* ================================================================
-   SUB-BAR SETUP (always-visible stitching labels in content areas)
-================================================================ */
-function setupSubBars() {
-  const defs = [
-  ['sub-education', 'Education',               17, 27],
-    ['sub-skills',    'Skills',                  17, 27],
-['sub-tools',     'Tools',                   17, 27],
-['sub-festm2026', 'Fest-M 2026',             17, 27],
-['sub-festm2024', 'Fest-M 2024',             17, 27],
-['sub-festm2023', 'Fest-M 2023',             17, 27],
-['sub-icmc2023',  'ICMC 2023',               17, 27],
-['sub-dicmf2023', 'DICMF 2023',              17, 27],
-['sub-syzygy',    'SYZYGY',                  17, 27],
-['sub-iloveyou',  'I Love You, Customers :)',17, 27],
-['sub-plantcare', 'PlantCare Simulator',     17, 27],
-['sub-doorman',   'DoorMan',                 17, 27],
-['sub-hana',      'Hana : Starting Over',    17, 27],
-  ];
-  defs.forEach(([id, label, fs, bh]) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const svg  = buildSVG(label, fs, bh, true);
-    const svgW = parseInt(svg.getAttribute('width'));
-    el.style.width = (svgW + 28) + 'px';
-    el.appendChild(svg);
-  });
-}
-function setupContactBars() {
-  const defs = [
-    ['contact-email',     'o3oq3qo3o@gmail.com',     17, 27],
-    ['contact-instagram', '@ilconglee', 17, 27],
-  ];
-
-  defs.forEach(([id, label, fs, bh]) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-
-    const svg  = buildSVG(label, fs, bh, true);
-    const svgW = parseInt(svg.getAttribute('width'), 10);
-
-    el.style.width = (svgW + 28) + 'px';
-    el.appendChild(svg);
-  });
-}
-
-/* ================================================================
    SECTION PANEL TOGGLE
 ================================================================ */
 let currentSection = null;
@@ -1281,8 +1268,6 @@ function setupMobileTouch() {
 window.addEventListener('DOMContentLoaded', () => {
   document.fonts.ready.then(() => {
     setupNavBars();
-    setupSubBars();
-    setupContactBars();
     setupMobileTouch();
   });
 });

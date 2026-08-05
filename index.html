@@ -370,26 +370,28 @@
       body { cursor: auto; }
       #needle-svg, #thread-canvas-back, #thread-canvas-front { display: none; }
 
-      /* 검은 박스: 왼쪽에 세워두고, 누른 것만 회전해서 눕는다 */
+      /* 검은 박스: 왼쪽 세로 열에 세워두고, 누른 것만 회전해서 눕는다.
+         열 폭은 27px 로 고정 — 눕은 바는 오른쪽 내용 영역 위로 뻗어나간다 */
       #header {
-        position: relative;
+        position: fixed;
+        top: 0; left: 0; bottom: 0;
+        width: auto;
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
         gap: 10px;
-        padding: 24px 20px 0;
+        padding: 24px 0 0 20px;
         overflow: visible;
       }
-      /* slot 이 자리를 잡고, 바는 그 안에서 회전만 한다 */
       .nav-slot {
         display: block;
         position: relative;
-        width: 27px;
+        width: 27px;                 /* 열려도 열 폭은 그대로 */
         height: var(--bar-len);
         flex-shrink: 0;
-        transition: width 0.35s ease-out, height 0.35s ease-out;
+        transition: height 0.35s ease-out;
       }
-      .nav-slot.open-slot { width: var(--bar-len); height: 27px; }
+      .nav-slot.open-slot { height: 27px; }
 
       .nav-bar {
         position: absolute;
@@ -408,25 +410,25 @@
       .nav-bar, .nav-circle { cursor: pointer; }
       .contact-link { cursor: pointer; }
 
-      /* 패널을 일반 흐름에 두어 페이지가 자연스럽게 늘어나게 한다 */
+      /* 내용은 검은 열 오른쪽 영역에 */
       #content-area {
-        position: relative;
-        top: auto; left: auto; right: auto; bottom: auto;
-        padding: 12px 0 60px;
-        overflow-y: visible;
+        position: fixed;
+        top: 0; left: 67px;   /* 20(좌여백) + 27(열 폭) + 20(간격) */
+        right: 0; bottom: 0;
+        padding: 24px 20px 60px 0;
+        overflow-y: auto;
       }
       .section-panel {
         position: static;
         display: none;
-        margin-top: 20px;
       }
       .section-panel.open { display: block; }
 
-      .section-body { padding: 0 20px 48px; }
+      .section-body { padding: 0 0 48px; }
       #panel-performances,
       #panel-collaborations { bottom: auto; }
       #panel-performances .section-body,
-      #panel-collaborations .section-body { padding: 0 20px 48px; height: auto; }
+      #panel-collaborations .section-body { padding: 0 0 48px; height: auto; }
 
       /* 가로로 넘치던 목록은 전부 줄바꿈 */
       #panel-performances .info-list,
@@ -1329,6 +1331,15 @@ function pinBar(secId) {
   if (!isMobile()) return;
   const s = el.querySelector('svg');
   if (s) setTimeout(() => animBar(s, 'in'), 380);   // 회전이 끝난 뒤 글자 등장
+
+  // 회전이 끝난 뒤, 눕은 바 바로 아래에서 내용이 시작되게 위 여백을 준다
+  setTimeout(() => {
+    const panel = document.getElementById('panel-' + secId);
+    const area  = document.getElementById('content-area');
+    if (!panel || !area) return;
+    const gap = el.getBoundingClientRect().bottom - area.getBoundingClientRect().top + 14;
+    panel.style.paddingTop = Math.max(0, gap) + 'px';
+  }, 380);
 }
 
 function toggleSection(secId) {
@@ -1373,6 +1384,7 @@ function closePanel(secId) {
 
   function hidePanel() {
     panel.classList.remove('open');
+    panel.style.paddingTop = '';
     panel._closeTimer   = null;
     panel._closeHandler = null;
   }

@@ -443,7 +443,7 @@
 
         <div class="info-row">
           <span class="info-label">Wonbin Lee</span>
-          <div class="info-content info-bio">Wonbin Lee is a sound artist and composer who designs sound. Textiles serve as a language that runs throughout her practice. Finding a musical language in women's domestic labor—from the pounding stone and weaving to the sewing machine—she uses sound to make perceptible the time and traces that often go unnoticed in everyday life.</div>
+          <div class="info-content info-bio">Wonbin Lee is a sound artist and composer. Textiles serve as a language that runs throughout her practice. Finding musical material in women's domestic labor—from the Korean fulling stone (dadeumitdol) to weaving and the sewing machine—she uses sound to make perceptible the time and traces that often go unnoticed in everyday life.</div>
           <span class="dash">- - - - - - - - - -</span>
         </div>
 
@@ -962,7 +962,7 @@ document.body.appendChild(measSVG);
 
 function measWidth(str, fs) {
   const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  t.setAttribute('font-family', "'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', sans-serif");
+  t.setAttribute('font-family', "'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif");
   t.setAttribute('font-size', String(fs));
   t.setAttribute('font-weight', '300');
   t.textContent = str;
@@ -995,7 +995,16 @@ function tokenise(label, fs, barH) {
   const baseline   = barH / 2 + fs * 0.35;
   for (let i = 0; i < label.length; i++) {
     const ch = label[i];
-    const w  = measWidth(ch, fs);
+
+    // 공백은 SVG가 잘라내서 getComputedTextLength()가 0을 반환한다.
+    // 'x x' 폭에서 'xx' 폭을 빼는 방식으로 실제 공백 폭을 구한다.
+    if (ch === ' ') {
+      cx += measWidth('x x', fs) - measWidth('xx', fs) + LETTER_SPACING;
+      ci++;
+      continue;
+    }
+
+    const w = measWidth(ch, fs);
     tokens.push({ kind: 'char', ch, x: cx, w, ci });
     cx += w + LETTER_SPACING;
     ci++;
@@ -1032,7 +1041,7 @@ function buildSVG(label, fs, barH, isStatic) {
       t.setAttribute('x',                String(tok.x));
       t.setAttribute('y',                String(midY));
       t.setAttribute('dominant-baseline','central');
-      t.setAttribute('font-family',      "'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', sans-serif");
+      t.setAttribute('font-family',      "'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif");
       t.setAttribute('font-size',        String(fs));
       t.setAttribute('font-weight',      '300');
       t.setAttribute('fill',             '#ffffff');

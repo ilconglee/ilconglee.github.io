@@ -367,44 +367,91 @@
     @media (max-width: 768px) {
       body { cursor: auto; }
       #needle-svg, #thread-canvas-back, #thread-canvas-front { display: none; }
+
+      /* 검은 박스: 평소엔 세워두고, 누른 것만 눕는다. 전부 가운데 정렬 */
       #header {
         position: relative;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
         justify-content: flex-start;
         gap: 10px;
-        padding: 24px 0 0 20px;
+        padding: 24px 20px 0;
         overflow: visible;
       }
+      .nav-bar {
+        width: 27px !important;        /* JS 인라인 width 를 덮어씀 */
+        height: var(--bar-len);        /* 가로일 때의 길이를 그대로 세로로 */
+        padding: 0;
+        transition: width 0.3s ease-out, height 0.3s ease-out;
+      }
+      .nav-bar svg { display: none; }  /* 세워둔 동안은 글자를 감춘다 */
+      .nav-bar.open-bar {
+        width: var(--bar-len) !important;
+        height: 27px;
+        padding: 0 14px;
+      }
+      .nav-bar.open-bar svg { display: block; }
+      .nav-bar, .nav-circle { cursor: pointer; }
+      .contact-link { cursor: pointer; }
+
+      /* 패널을 일반 흐름에 두어 페이지가 자연스럽게 늘어나게 한다 */
       #content-area {
         position: relative;
         top: auto; left: auto; right: auto; bottom: auto;
         padding: 12px 0 60px;
         overflow-y: visible;
       }
+      .section-panel {
+        position: static;
+        display: none;
+        margin-top: 20px;
+      }
+      .section-panel.open { display: block; }
+
       .section-body { padding: 0 20px 48px; }
       #panel-performances,
       #panel-collaborations { bottom: auto; }
       #panel-performances .section-body,
-      #panel-collaborations .section-body { padding: 0 0 48px; height: auto; }
-      #panel-performances .info-list,
-      .collab-list { height: auto; padding: 0 20px 8px; }
-      .nav-bar, .nav-circle { cursor: pointer; }
-      .contact-link { cursor: pointer; }
+      #panel-collaborations .section-body { padding: 0 20px 48px; height: auto; }
 
-      /* IlCong Lee만 세로로 쌓기 — Performances / Collaborations는 가로 스크롤 유지 */
+      /* 가로로 넘치던 목록은 전부 줄바꿈 */
+      #panel-performances .info-list,
+      .collab-list {
+        height: auto;
+        overflow-x: visible;
+        overflow-y: visible;
+        padding: 0;
+      }
+      #panel-performances .info-row,
+      .collab-row {
+        display: block;
+        width: auto;
+        margin-bottom: 24px;
+      }
+      #panel-performances .info-row > span,
+      .collab-row > span {
+        display: block;
+        white-space: normal;
+      }
+
+      /* IlCong Lee: 항목명과 내용을 세로로 */
       #panel-ilcong .info-row {
         grid-template-columns: 1fr;
         margin-bottom: 37px;
       }
       #panel-ilcong .info-label,
       #panel-ilcong .info-content { grid-column: 1; }
+      #panel-ilcong .info-bio { max-width: none; }
+      /* '|' 뒤에서 줄바꿈 */
+      .brk { display: block; }
 
-      /* Works: full-width thumbnails on narrow screens */
+      /* Works: 썸네일 전폭, 제목 줄도 넘치면 줄바꿈 */
       .work-item {
         --work-w: 100%;
         margin-bottom: 96px;
       }
+      .work-title { flex-wrap: wrap; gap: 0; }
+      .work-name, .work-year { flex: 0 0 auto; }
     }
   </style>
 </head>
@@ -451,8 +498,14 @@
         <div class="info-row">
           <span class="info-label">Education</span>
           <div class="info-content">
-            <div>Korea National University of Arts | M.A. in Musical Technology <span class="dash">- - - - - - - - - -</span></div>
-            <div>Sookmyung Women's University | B.M. in Composition <span class="dash">- - - - - - - - - -</span></div>
+            <div>
+              <span class="brk">Korea National University of Arts |</span>
+              <span class="brk">M.A. in Musical Technology <span class="dash">- - - - - - - - - -</span></span>
+            </div>
+            <div>
+              <span class="brk">Sookmyung Women's University |</span>
+              <span class="brk">B.M. in Composition <span class="dash">- - - - - - - - - -</span></span>
+            </div>
           </div>
           <span class="dash">- - - - - - - - - -</span>
         </div>
@@ -1183,6 +1236,7 @@ function setupNavBars() {
     const svg   = buildSVG(label, 15, 27, false);  // 17 ≈ 27 * 0.65
     const svgW  = parseInt(svg.getAttribute('width'));
     barEl.style.width = (svgW + 28) + 'px';
+    barEl.style.setProperty('--bar-len', (svgW + 28) + 'px');  // 모바일에서 세로 길이로 재사용
     barEl.appendChild(svg);
 
     let active = false;
@@ -1232,8 +1286,19 @@ let currentSection = null;
 function unpinBar(secId) {
   const el = document.querySelector(`.nav-bar[data-section="${secId}"], .nav-circle[data-section="${secId}"]`);
   if (!el) return;
+  el.classList.remove('open-bar');
   const s = el.querySelector('svg');
   if (s) animBar(s, 'out');
+}
+
+/* 열린 섹션의 바: 모바일에서는 눕히고, 눕고 난 뒤 글자를 차례로 띄운다 */
+function pinBar(secId) {
+  const el = document.querySelector(`.nav-bar[data-section="${secId}"], .nav-circle[data-section="${secId}"]`);
+  if (!el) return;
+  el.classList.add('open-bar');
+  if (!isMobile()) return;
+  const s = el.querySelector('svg');
+  if (s) setTimeout(() => animBar(s, 'in'), 300);   // 눕는 애니메이션이 끝난 뒤
 }
 
 function toggleSection(secId) {
@@ -1248,6 +1313,7 @@ function toggleSection(secId) {
       unpinBar(currentSection);  // switch → unpin old bar
     }
     openPanel(secId);
+    pinBar(secId);
     currentSection = secId;
     // bar text was already animated in by mouseenter; just keep it pinned
   }
@@ -1314,9 +1380,6 @@ function setupMobileTouch() {
         el.addEventListener('animationend', () => el.classList.remove('wiggling'), { once: true });
         return;
       }
-      // On touch: trigger bar animation then toggle content
-      const svg = el.querySelector('svg');
-      if (svg) animBar(svg, 'in');
       toggleSection(sec);
     });
   });

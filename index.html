@@ -370,6 +370,12 @@
 .contact-link:hover { text-decoration: underline; }
 /* 'e-mail |', 'instagram |' 는 링크가 아닌 일반 텍스트 */
 .contact-row { display: flex; gap: 5px; }
+/* 구분자 '|' — 세로획이라 웨이트만으로는 얇아지지 않아 가로로 눌러 얇게 만든다 */
+.sep {
+  font-weight: 200;
+  display: inline-block;
+  transform: scaleX(0.55);   /* 값이 작을수록 얇아짐 */
+}
 .contact-label { color: inherit; }
 /* 구분선은 내용에 바로 붙음 — IlCong Lee / Performances / Collaborations와 동일 */
 .contact-list .dash { margin-top: -10px; }
@@ -776,11 +782,11 @@
     <div class="section-body">
       <div class="contact-list">
         <div class="contact-row">
-          <span class="contact-label">e-mail |</span>
+          <span class="contact-label">e-mail</span><span class="sep">|</span>
           <a class="contact-link" href="mailto:o3oq3qo3o@gmail.com">o3oq3qo3o@gmail.com</a>
         </div>
         <div class="contact-row">
-          <span class="contact-label">instagram |</span>
+          <span class="contact-label">instagram</span><span class="sep">|</span>
           <a class="contact-link" href="https://instagram.com/ilconglee" target="_blank" rel="noopener noreferrer">@ilconglee</a>
         </div>
         <span class="dash">- - - - - - - - - -</span>

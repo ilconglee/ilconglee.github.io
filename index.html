@@ -219,6 +219,8 @@
 .dash {
   font-weight: 200;
 }
+/* 하이픈 위치: 데스크톱은 .dash-d, 모바일은 .dash-m 만 보인다 */
+.dash-m { display: none; }
 /* IlCong Lee: 구분선이 항목 아래 한 줄을 통째로 차지 */
 #panel-ilcong .dash { grid-column: 1 / -1; }
 
@@ -238,7 +240,7 @@
 #panel-performances .info-row,
 .collab-row {
   /* 각 단의 폭 */
-  --col-year:  260px;
+  --col-year:  140px;
   --col-title: 240px;
   --col-role:  180px;
   /* 단 사이 여백 — 각각 따로 조절 */
@@ -470,6 +472,9 @@
       #panel-ilcong .info-bio { max-width: none; }
       /* '|' 뒤에서 줄바꿈 */
       .brk { display: block; }
+      /* 하이픈을 날짜 / 첫 줄 옆으로 */
+      .dash-d { display: none; }
+      .dash-m { display: inline; }
 
       /* Works: 썸네일 전폭, 제목 줄도 넘치면 줄바꿈 */
       .work-item {
@@ -525,12 +530,12 @@
           <span class="info-label">Education</span>
           <div class="info-content">
             <div>
-              <span class="brk">Korea National University of Arts | <span class="dash">- - - - - - - - - -</span></span>
-              <span class="brk">M.A. in Musical Technology</span>
+              <span class="brk">Korea National University of Arts | <span class="dash dash-m">- - - - -</span></span>
+              <span class="brk">M.A. in Musical Technology <span class="dash dash-d">- - - - -</span></span>
             </div>
             <div>
-              <span class="brk">Sookmyung Women's University | <span class="dash">- - - - - - - - - -</span></span>
-              <span class="brk">B.M. in Composition</span>
+              <span class="brk">Sookmyung Women's University | <span class="dash dash-m">- - - - -</span></span>
+              <span class="brk">B.M. in Composition <span class="dash dash-d">- - - - -</span></span>
             </div>
           </div>
           <span class="dash">- - - - - - - - - -</span>
@@ -581,29 +586,29 @@
     <div class="section-body">
       <div class="info-list">
         <div class="info-row">
-          <span class="info-year">Sep 16, 2026 <span class="dash">- - - - - - - - - -</span></span>
+          <span class="info-year">Sep 16, 2026 <span class="dash dash-m">- - - - -</span></span>
           <span class="info-title">'인고침 (忍苦砧)' for 다듬잇돌 and Live Electronics</span>
-          <span class="info-place">Fest-M 2026 | Chamber Hall, Yonsei University, Seoul, KR</span>
+          <span class="info-place">Fest-M 2026 | Chamber Hall, Yonsei University, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="info-row">
-          <span class="info-year">Sep 4, 2024 <span class="dash">- - - - - - - - - -</span></span>
+          <span class="info-year">Sep 4, 2024 <span class="dash dash-m">- - - - -</span></span>
           <span class="info-title">'Trolley' for Tuba and Live Electronics</span>
-          <span class="info-place">Fest-M 2024 | CKL Stage, Seoul, KR</span>
+          <span class="info-place">Fest-M 2024 | CKL Stage, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="info-row">
-          <span class="info-year">May 14, 2023 <span class="dash">- - - - - - - - - -</span></span>
+          <span class="info-year">May 14, 2023 <span class="dash dash-m">- - - - -</span></span>
           <span class="info-title">'The Little Voice In My Head' for Violin and Electronics</span>
-          <span class="info-place">Fest-M 2023 | Seoul National University of Education, Seoul, KR</span>
+          <span class="info-place">Fest-M 2023 | Seoul National University of Education, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="info-row">
-          <span class="info-year">Oct 18, 2023 <span class="dash">- - - - - - - - - -</span></span>
+          <span class="info-year">Oct 18, 2023 <span class="dash dash-m">- - - - -</span></span>
           <span class="info-title">'The Little Voice In My Head' for Violin and Electronics</span>
-          <span class="info-place">ICMC 2023 | School of Music, The Chinese University of Hong Kong, Shenzhen, HK</span>
+          <span class="info-place">ICMC 2023 | School of Music, The Chinese University of Hong Kong, Shenzhen, HK <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="info-row">
-          <span class="info-year">Nov 11, 2023 <span class="dash">- - - - - - - - - -</span></span>
+          <span class="info-year">Nov 11, 2023 <span class="dash dash-m">- - - - -</span></span>
           <span class="info-title">'The Little Voice In My Head' for Violin and Electronics</span>
-          <span class="info-place">DICMF 2023 | Suchang Hall, Daegu Arts Factory, Daegu, KR</span>
+          <span class="info-place">DICMF 2023 | Suchang Hall, Daegu Arts Factory, Daegu, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
         <span class="dash">- - - - - - - - - -</span>
       </div>
@@ -615,40 +620,40 @@
     <div class="section-body">
       <div class="collab-list">
         <div class="collab-row">
-          <span class="collab-year">Dec 15 - 18, 2025 <span class="dash">- - - - - - - - - -</span></span>
+          <span class="collab-year">Dec 15 - 18, 2025 <span class="dash dash-m">- - - - -</span></span>
           <span class="collab-title">I Love You, Customers :) | VR Game</span>
           <span class="collab-role">Sound</span>
-          <span class="collab-place">SIGGRAPH ASIA, Convention and Exhibition Center, HK</span>
+          <span class="collab-place">SIGGRAPH ASIA, Convention and Exhibition Center, HK <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="collab-row">
-          <span class="collab-year">Dec 4 - 6, 2025 <span class="dash">- - - - - - - - - -</span></span>
+          <span class="collab-year">Dec 4 - 6, 2025 <span class="dash dash-m">- - - - -</span></span>
           <span class="collab-title">SYZYGY | Art game</span>
           <span class="collab-role">Sound System Develop / BGM</span>
-          <span class="collab-place">Arts Korea Lab, Seoul, KR</span>
+          <span class="collab-place">Arts Korea Lab, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="collab-row">
-          <span class="collab-year">2025 <span class="dash">- - - - - - - - - -</span></span>
+          <span class="collab-year">2025 <span class="dash dash-m">- - - - -</span></span>
           <span class="collab-title">PlantCare Simulator | VR Game</span>
           <span class="collab-role">BGM</span>
-          <span class="collab-place">VCU, VA, US</span>
+          <span class="collab-place">VCU, VA, US <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="collab-row">
-          <span class="collab-year">Jan 9 - 11, 2025 <span class="dash">- - - - - - - - - -</span></span>
+          <span class="collab-year">Jan 9 - 11, 2025 <span class="dash dash-m">- - - - -</span></span>
           <span class="collab-title">Hana : Starting Over | XR Musical</span>
           <span class="collab-role">Sound design</span>
-          <span class="collab-place">CKL Stage, Seoul, KR</span>
+          <span class="collab-place">CKL Stage, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="collab-row">
-          <span class="collab-year">Dec 4 - 6, 2024 <span class="dash">- - - - - - - - - -</span></span>
+          <span class="collab-year">Dec 4 - 6, 2024 <span class="dash dash-m">- - - - -</span></span>
           <span class="collab-title">Hana : Starting Over | XR Musical</span>
           <span class="collab-role">Sound design</span>
-          <span class="collab-place">SIGGRAPH ASIA, International Forum, Tokyo, JP</span>
+          <span class="collab-place">SIGGRAPH ASIA, International Forum, Tokyo, JP <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="collab-row">
-          <span class="collab-year">Oct 10, 2024 <span class="dash">- - - - - - - - - -</span></span>
+          <span class="collab-year">Oct 10, 2024 <span class="dash dash-m">- - - - -</span></span>
           <span class="collab-title">DoorMan | XR Musical</span>
           <span class="collab-role">Sound design</span>
-          <span class="collab-place">Stage 66, Seoul, KR</span>
+          <span class="collab-place">Stage 66, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
         <span class="dash">- - - - - - - - - -</span>
       </div>
@@ -761,6 +766,7 @@
           <span class="contact-label">instagram |</span>
           <a class="contact-link" href="https://instagram.com/ilconglee" target="_blank" rel="noopener noreferrer">@ilconglee</a>
         </div>
+        <span class="dash">- - - - - - - - - -</span>
       </div>
     </div>
   </div>

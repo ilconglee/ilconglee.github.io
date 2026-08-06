@@ -123,8 +123,10 @@
       overflow-y: auto;
       padding: 20px 0 0;
     }
-    /* 네이티브 스크롤바는 숨긴다 (아래 .cbar 로 직접 그림) */
-    #content-area::-webkit-scrollbar { width: 0; height: 0; }
+    /* 네이티브 스크롤바는 어디서든 숨긴다 (아래 .cbar 로 직접 그림).
+       Chrome/Safari/Edge 는 ::-webkit-scrollbar, Firefox 는 scrollbar-width */
+    *::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    * { scrollbar-width: none; -ms-overflow-style: none; }
 
     /* 직접 그리는 스크롤바 — 각진 점선, 스크롤 중에만 보임 */
     .cbar {
@@ -234,9 +236,6 @@
   overflow-y: hidden;
   padding: 0 48px;       /* 좌우 여백 */
 }
-#panel-performances .info-list::-webkit-scrollbar,
-.collab-list::-webkit-scrollbar { width: 0; height: 0; }
-
 #panel-performances .info-row,
 .collab-row {
   /* 각 단의 폭 */
@@ -406,7 +405,7 @@
       }
       .nav-slot.open-slot .nav-bar { transform: none; }
       .nav-bar svg { display: none; }               /* 세워둔 동안은 글자를 감춘다 */
-      .nav-slot.open-slot .nav-bar svg { display: block; }
+      .nav-slot.open-slot .nav-bar svg { display: block; flex: 0 0 auto; }
 
       /* 스크롤을 시작하면 눕은 바가 세로 바 폭까지 줄어 첫 글자만 남는다.
          내용은 그대로 두고 바 길이만 바뀐다. 다시 누르면 원래대로. */
@@ -416,8 +415,15 @@
         overflow: hidden;
         justify-content: flex-start;
       }
-      /* flex 축소를 막아 글자 크기를 원래대로 유지한다 */
-      .nav-slot.open-slot.shrunk .nav-bar svg { overflow: hidden; flex: 0 0 auto; }
+      /* 폭을 명시해 flex 축소를 원천 차단 — 글자 크기가 눕었을 때와 같다.
+         --bar-len 은 글자 폭 + 좌우 padding 28px 이므로 28 을 뺀다 */
+      .nav-slot.open-slot.shrunk .nav-bar svg {
+        overflow: hidden;
+        flex: 0 0 auto;
+        width: calc(var(--bar-len) - 28px);
+        height: 27px;
+        max-width: none;
+      }
       /* 첫 글자만 남기고 나머지 글자는 감춘다 */
       .nav-slot.open-slot.shrunk .nav-bar svg text:nth-of-type(n+2) { display: none; }
 

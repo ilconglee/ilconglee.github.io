@@ -412,11 +412,13 @@
          내용은 그대로 두고 바 길이만 바뀐다. 다시 누르면 원래대로. */
       .nav-slot.open-slot.shrunk .nav-bar {
         width: 27px !important;
-        padding: 0;
+        padding: 0 0 0 8px;
         overflow: hidden;
         justify-content: flex-start;
       }
       .nav-slot.open-slot.shrunk .nav-bar svg { overflow: hidden; }
+      /* 첫 글자만 남기고 나머지 글자는 감춘다 */
+      .nav-slot.open-slot.shrunk .nav-bar svg text:nth-of-type(n+2) { display: none; }
 
       .nav-circle { position: absolute; top: 0; left: 0; }
       .nav-bar, .nav-circle { cursor: pointer; }
@@ -527,14 +529,14 @@
       <div class="info-list">
 
         <div class="info-row">
-          <span class="info-label">Education</span>
+          <span class="info-label">Education <span class="dash dash-m">- - - - -</span></span>
           <div class="info-content">
             <div>
-              <span class="brk">Korea National University of Arts | <span class="dash dash-m">- - - - -</span></span>
+              <span class="brk">Korea National University of Arts |</span>
               <span class="brk">M.A. in Musical Technology <span class="dash dash-d">- - - - -</span></span>
             </div>
             <div>
-              <span class="brk">Sookmyung Women's University | <span class="dash dash-m">- - - - -</span></span>
+              <span class="brk">Sookmyung Women's University |</span>
               <span class="brk">B.M. in Composition <span class="dash dash-d">- - - - -</span></span>
             </div>
           </div>
@@ -542,7 +544,7 @@
         </div>
 
         <div class="info-row">
-          <span class="info-label">Skills</span>
+          <span class="info-label">Skills <span class="dash dash-m">- - - - -</span></span>
           <div class="info-content info-tags">
             <span>LiveElectronics</span>
             <span>Multichannel</span>
@@ -558,7 +560,7 @@
         </div>
 
         <div class="info-row">
-          <span class="info-label">Tools</span>
+          <span class="info-label">Tools <span class="dash dash-m">- - - - -</span></span>
           <div class="info-content info-tags">
             <span>MAX/MSP/Jitter</span>
             <span>RNBO</span>
@@ -572,7 +574,7 @@
         </div>
 
         <div class="info-row">
-          <span class="info-label">Wonbin Lee</span>
+          <span class="info-label">Wonbin Lee <span class="dash dash-m">- - - - -</span></span>
           <div class="info-content info-bio">Wonbin Lee is a sound artist and composer. Textiles serve as a language that runs throughout her practice. Finding musical material in women's domestic labor—from the Korean fulling stone (dadeumitdol) to weaving and the sewing machine—she uses sound to make perceptible the time and traces that often go unnoticed in everyday life.</div>
           <span class="dash">- - - - - - - - - -</span>
         </div>

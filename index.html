@@ -223,6 +223,14 @@
 }
 /* 하이픈 위치: 데스크톱은 .dash-d, 모바일은 .dash-m 만 보인다 */
 .dash-m { display: none; }
+
+/* 항목명·작품 이름만 본문(200)보다 두껍게 — 모바일/데스크톱 공통.
+   'for ...', '| Art game' 같은 부연은 .nm 밖이라 얇게 남는다 */
+.info-label,
+.contact-label,
+.nm {
+  font-weight: 400;
+}
 /* IlCong Lee: 구분선이 항목 아래 한 줄을 통째로 차지 */
 #panel-ilcong .dash { grid-column: 1 / -1; }
 
@@ -596,27 +604,27 @@
       <div class="info-list">
         <div class="info-row">
           <span class="info-year">Sep 16, 2026 <span class="dash dash-m">- - - - -</span></span>
-          <span class="info-title">'인고침 (忍苦砧)' for 다듬잇돌 and Live Electronics</span>
+          <span class="info-title"><span class="nm">'인고침 (忍苦砧)'</span> for 다듬잇돌 and Live Electronics</span>
           <span class="info-place">Fest-M 2026 | Chamber Hall, Yonsei University, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="info-row">
           <span class="info-year">Sep 4, 2024 <span class="dash dash-m">- - - - -</span></span>
-          <span class="info-title">'Trolley' for Tuba and Live Electronics</span>
+          <span class="info-title"><span class="nm">'Trolley'</span> for Tuba and Live Electronics</span>
           <span class="info-place">Fest-M 2024 | CKL Stage, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="info-row">
           <span class="info-year">May 14, 2023 <span class="dash dash-m">- - - - -</span></span>
-          <span class="info-title">'The Little Voice In My Head' for Violin and Electronics</span>
+          <span class="info-title"><span class="nm">'The Little Voice In My Head'</span> for Violin and Electronics</span>
           <span class="info-place">Fest-M 2023 | Seoul National University of Education, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="info-row">
           <span class="info-year">Oct 18, 2023 <span class="dash dash-m">- - - - -</span></span>
-          <span class="info-title">'The Little Voice In My Head' for Violin and Electronics</span>
+          <span class="info-title"><span class="nm">'The Little Voice In My Head'</span> for Violin and Electronics</span>
           <span class="info-place">ICMC 2023 | School of Music, The Chinese University of Hong Kong, Shenzhen, HK <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="info-row">
           <span class="info-year">Nov 11, 2023 <span class="dash dash-m">- - - - -</span></span>
-          <span class="info-title">'The Little Voice In My Head' for Violin and Electronics</span>
+          <span class="info-title"><span class="nm">'The Little Voice In My Head'</span> for Violin and Electronics</span>
           <span class="info-place">DICMF 2023 | Suchang Hall, Daegu Arts Factory, Daegu, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
         <span class="dash">- - - - - - - - - -</span>
@@ -630,37 +638,37 @@
       <div class="collab-list">
         <div class="collab-row">
           <span class="collab-year">Dec 15 - 18, 2025 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title">I Love You, Customers :) | VR Game</span>
+          <span class="collab-title"><span class="nm">I Love You, Customers :)</span> | VR Game</span>
           <span class="collab-role">Sound</span>
           <span class="collab-place">SIGGRAPH ASIA, Convention and Exhibition Center, HK <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="collab-row">
           <span class="collab-year">Dec 4 - 6, 2025 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title">SYZYGY | Art game</span>
+          <span class="collab-title"><span class="nm">SYZYGY</span> | Art game</span>
           <span class="collab-role">Sound System Develop / BGM</span>
           <span class="collab-place">Arts Korea Lab, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="collab-row">
           <span class="collab-year">2025 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title">PlantCare Simulator | VR Game</span>
+          <span class="collab-title"><span class="nm">PlantCare Simulator</span> | VR Game</span>
           <span class="collab-role">BGM</span>
           <span class="collab-place">VCU, VA, US <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="collab-row">
           <span class="collab-year">Jan 9 - 11, 2025 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title">Hana : Starting Over | XR Musical</span>
+          <span class="collab-title"><span class="nm">Hana : Starting Over</span> | XR Musical</span>
           <span class="collab-role">Sound design</span>
           <span class="collab-place">CKL Stage, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="collab-row">
           <span class="collab-year">Dec 4 - 6, 2024 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title">Hana : Starting Over | XR Musical</span>
+          <span class="collab-title"><span class="nm">Hana : Starting Over</span> | XR Musical</span>
           <span class="collab-role">Sound design</span>
           <span class="collab-place">SIGGRAPH ASIA, International Forum, Tokyo, JP <span class="dash dash-d">- - - - -</span></span>
         </div>
         <div class="collab-row">
           <span class="collab-year">Oct 10, 2024 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title">DoorMan | XR Musical</span>
+          <span class="collab-title"><span class="nm">DoorMan</span> | XR Musical</span>
           <span class="collab-role">Sound design</span>
           <span class="collab-place">Stage 66, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
         </div>
@@ -675,7 +683,7 @@
 
       <div class="work-item">
         <div class="work-title">
-          <a class="work-name" href="https://youtu.be/H0Ah2hXy-88" target="_blank" rel="noopener noreferrer">'인고침 (忍苦砧)' for 다듬잇돌 and Live Electronics</a>
+          <a class="work-name" href="https://youtu.be/H0Ah2hXy-88" target="_blank" rel="noopener noreferrer"><span class="nm">'인고침 (忍苦砧)'</span> for 다듬잇돌 and Live Electronics</a>
           <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2026</span>
         </div>
         <a class="work-thumb-link" href="https://youtu.be/H0Ah2hXy-88" target="_blank" rel="noopener noreferrer">
@@ -688,7 +696,7 @@
 
       <div class="work-item">
         <div class="work-title">
-          <a class="work-name" href="https://youtu.be/Tch5AWKle9g" target="_blank" rel="noopener noreferrer">'天地人' for One Performer and Sewing Machine with Arduino</a>
+          <a class="work-name" href="https://youtu.be/Tch5AWKle9g" target="_blank" rel="noopener noreferrer"><span class="nm">'天地人'</span> for One Performer and Sewing Machine with Arduino</a>
           <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
         </div>
         <a class="work-thumb-link" href="https://youtu.be/Tch5AWKle9g" target="_blank" rel="noopener noreferrer">
@@ -701,7 +709,7 @@
 
       <div class="work-item">
         <div class="work-title">
-          <a class="work-name" href="https://youtu.be/GCeSyo8p-6E" target="_blank" rel="noopener noreferrer">'Geliocentric' for 6ch Live Electronics</a>
+          <a class="work-name" href="https://youtu.be/GCeSyo8p-6E" target="_blank" rel="noopener noreferrer"><span class="nm">'Geliocentric'</span> for 6ch Live Electronics</a>
           <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2024</span>
         </div>
         <a class="work-thumb-link" href="https://youtu.be/GCeSyo8p-6E" target="_blank" rel="noopener noreferrer">
@@ -714,7 +722,7 @@
 
       <div class="work-item">
         <div class="work-title">
-          <a class="work-name" href="https://youtu.be/1Zt9EetgQkI" target="_blank" rel="noopener noreferrer">'Übermensch' for 2ch Tape</a>
+          <a class="work-name" href="https://youtu.be/1Zt9EetgQkI" target="_blank" rel="noopener noreferrer"><span class="nm">'Übermensch'</span> for 2ch Tape</a>
           <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2024</span>
         </div>
         <a class="work-thumb-link" href="https://youtu.be/1Zt9EetgQkI" target="_blank" rel="noopener noreferrer">
@@ -727,7 +735,7 @@
 
       <div class="work-item">
         <div class="work-title">
-          <a class="work-name" href="https://youtu.be/iIqCC3MiLvA" target="_blank" rel="noopener noreferrer">SYZYGY</a>
+          <a class="work-name" href="https://youtu.be/iIqCC3MiLvA" target="_blank" rel="noopener noreferrer"><span class="nm">SYZYGY</span></a>
           <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
         </div>
         <a class="work-thumb-link" href="https://youtu.be/iIqCC3MiLvA" target="_blank" rel="noopener noreferrer">
@@ -741,7 +749,7 @@
       <!-- No link, Coming Soon -->
       <div class="work-item">
         <div class="work-title">
-          <span class="work-name">I Love You, Customers :)</span>
+          <span class="work-name"><span class="nm">I Love You, Customers :)</span></span>
           <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
         </div>
         <div class="work-coming-soon">Coming Soon</div>
@@ -749,7 +757,7 @@
 
       <div class="work-item">
         <div class="work-title">
-          <a class="work-name" href="https://youtube.com/shorts/OUugxilj6i8" target="_blank" rel="noopener noreferrer">PlantCare Simulator</a>
+          <a class="work-name" href="https://youtube.com/shorts/OUugxilj6i8" target="_blank" rel="noopener noreferrer"><span class="nm">PlantCare Simulator</span></a>
           <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
         </div>
         <a class="work-thumb-link" href="https://youtube.com/shorts/OUugxilj6i8" target="_blank" rel="noopener noreferrer">

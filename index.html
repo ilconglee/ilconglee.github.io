@@ -238,7 +238,7 @@
 #panel-performances .info-row,
 .collab-row {
   /* 각 단의 폭 */
-  --col-year:  140px;
+  --col-year:  260px;
   --col-title: 240px;
   --col-role:  180px;
   /* 단 사이 여백 — 각각 따로 조절 */
@@ -400,11 +400,21 @@
         height: 27px;
         transform: translateY(var(--bar-len)) rotate(-90deg);
         transform-origin: left top;
-        transition: transform 0.35s ease-out;
+        transition: transform 0.35s ease-out, width 0.3s ease-out;
       }
       .nav-slot.open-slot .nav-bar { transform: none; }
       .nav-bar svg { display: none; }               /* 세워둔 동안은 글자를 감춘다 */
       .nav-slot.open-slot .nav-bar svg { display: block; }
+
+      /* 스크롤을 시작하면 눕은 바가 세로 바 폭까지 줄어 첫 글자만 남는다.
+         내용은 그대로 두고 바 길이만 바뀐다. 다시 누르면 원래대로. */
+      .nav-slot.open-slot.shrunk .nav-bar {
+        width: 27px !important;
+        padding: 0;
+        overflow: hidden;
+        justify-content: flex-start;
+      }
+      .nav-slot.open-slot.shrunk .nav-bar svg { overflow: hidden; }
 
       .nav-circle { position: absolute; top: 0; left: 0; }
       .nav-bar, .nav-circle { cursor: pointer; }
@@ -515,12 +525,12 @@
           <span class="info-label">Education</span>
           <div class="info-content">
             <div>
-              <span class="brk">Korea National University of Arts |</span>
-              <span class="brk">M.A. in Musical Technology <span class="dash">- - - - - - - - - -</span></span>
+              <span class="brk">Korea National University of Arts | <span class="dash">- - - - - - - - - -</span></span>
+              <span class="brk">M.A. in Musical Technology</span>
             </div>
             <div>
-              <span class="brk">Sookmyung Women's University |</span>
-              <span class="brk">B.M. in Composition <span class="dash">- - - - - - - - - -</span></span>
+              <span class="brk">Sookmyung Women's University | <span class="dash">- - - - - - - - - -</span></span>
+              <span class="brk">B.M. in Composition</span>
             </div>
           </div>
           <span class="dash">- - - - - - - - - -</span>
@@ -571,29 +581,29 @@
     <div class="section-body">
       <div class="info-list">
         <div class="info-row">
-          <span class="info-year">Sep 16, 2026</span>
+          <span class="info-year">Sep 16, 2026 <span class="dash">- - - - - - - - - -</span></span>
           <span class="info-title">'인고침 (忍苦砧)' for 다듬잇돌 and Live Electronics</span>
-          <span class="info-place">Fest-M 2026 | Chamber Hall, Yonsei University, Seoul, KR <span class="dash">- - - - - - - - - -</span></span>
+          <span class="info-place">Fest-M 2026 | Chamber Hall, Yonsei University, Seoul, KR</span>
         </div>
         <div class="info-row">
-          <span class="info-year">Sep 4, 2024</span>
+          <span class="info-year">Sep 4, 2024 <span class="dash">- - - - - - - - - -</span></span>
           <span class="info-title">'Trolley' for Tuba and Live Electronics</span>
-          <span class="info-place">Fest-M 2024 | CKL Stage, Seoul, KR <span class="dash">- - - - - - - - - -</span></span>
+          <span class="info-place">Fest-M 2024 | CKL Stage, Seoul, KR</span>
         </div>
         <div class="info-row">
-          <span class="info-year">May 14, 2023</span>
+          <span class="info-year">May 14, 2023 <span class="dash">- - - - - - - - - -</span></span>
           <span class="info-title">'The Little Voice In My Head' for Violin and Electronics</span>
-          <span class="info-place">Fest-M 2023 | Seoul National University of Education, Seoul, KR <span class="dash">- - - - - - - - - -</span></span>
+          <span class="info-place">Fest-M 2023 | Seoul National University of Education, Seoul, KR</span>
         </div>
         <div class="info-row">
-          <span class="info-year">Oct 18, 2023</span>
+          <span class="info-year">Oct 18, 2023 <span class="dash">- - - - - - - - - -</span></span>
           <span class="info-title">'The Little Voice In My Head' for Violin and Electronics</span>
-          <span class="info-place">ICMC 2023 | School of Music, The Chinese University of Hong Kong, Shenzhen, HK <span class="dash">- - - - - - - - - -</span></span>
+          <span class="info-place">ICMC 2023 | School of Music, The Chinese University of Hong Kong, Shenzhen, HK</span>
         </div>
         <div class="info-row">
-          <span class="info-year">Nov 11, 2023</span>
+          <span class="info-year">Nov 11, 2023 <span class="dash">- - - - - - - - - -</span></span>
           <span class="info-title">'The Little Voice In My Head' for Violin and Electronics</span>
-          <span class="info-place">DICMF 2023 | Suchang Hall, Daegu Arts Factory, Daegu, KR <span class="dash">- - - - - - - - - -</span></span>
+          <span class="info-place">DICMF 2023 | Suchang Hall, Daegu Arts Factory, Daegu, KR</span>
         </div>
         <span class="dash">- - - - - - - - - -</span>
       </div>
@@ -605,40 +615,40 @@
     <div class="section-body">
       <div class="collab-list">
         <div class="collab-row">
-          <span class="collab-year">Dec 15 - 18, 2025</span>
+          <span class="collab-year">Dec 15 - 18, 2025 <span class="dash">- - - - - - - - - -</span></span>
           <span class="collab-title">I Love You, Customers :) | VR Game</span>
           <span class="collab-role">Sound</span>
-          <span class="collab-place">SIGGRAPH ASIA, Convention and Exhibition Center, HK <span class="dash">- - - - - - - - - -</span></span>
+          <span class="collab-place">SIGGRAPH ASIA, Convention and Exhibition Center, HK</span>
         </div>
         <div class="collab-row">
-          <span class="collab-year">Dec 4 - 6, 2025</span>
+          <span class="collab-year">Dec 4 - 6, 2025 <span class="dash">- - - - - - - - - -</span></span>
           <span class="collab-title">SYZYGY | Art game</span>
           <span class="collab-role">Sound System Develop / BGM</span>
-          <span class="collab-place">Arts Korea Lab, Seoul, KR <span class="dash">- - - - - - - - - -</span></span>
+          <span class="collab-place">Arts Korea Lab, Seoul, KR</span>
         </div>
         <div class="collab-row">
-          <span class="collab-year">2025</span>
+          <span class="collab-year">2025 <span class="dash">- - - - - - - - - -</span></span>
           <span class="collab-title">PlantCare Simulator | VR Game</span>
           <span class="collab-role">BGM</span>
-          <span class="collab-place">VCU, VA, US <span class="dash">- - - - - - - - - -</span></span>
+          <span class="collab-place">VCU, VA, US</span>
         </div>
         <div class="collab-row">
-          <span class="collab-year">Jan 9 - 11, 2025</span>
+          <span class="collab-year">Jan 9 - 11, 2025 <span class="dash">- - - - - - - - - -</span></span>
           <span class="collab-title">Hana : Starting Over | XR Musical</span>
           <span class="collab-role">Sound design</span>
-          <span class="collab-place">CKL Stage, Seoul, KR <span class="dash">- - - - - - - - - -</span></span>
+          <span class="collab-place">CKL Stage, Seoul, KR</span>
         </div>
         <div class="collab-row">
-          <span class="collab-year">Dec 4 - 6, 2024</span>
+          <span class="collab-year">Dec 4 - 6, 2024 <span class="dash">- - - - - - - - - -</span></span>
           <span class="collab-title">Hana : Starting Over | XR Musical</span>
           <span class="collab-role">Sound design</span>
-          <span class="collab-place">SIGGRAPH ASIA, International Forum, Tokyo, JP <span class="dash">- - - - - - - - - -</span></span>
+          <span class="collab-place">SIGGRAPH ASIA, International Forum, Tokyo, JP</span>
         </div>
         <div class="collab-row">
-          <span class="collab-year">Oct 10, 2024</span>
+          <span class="collab-year">Oct 10, 2024 <span class="dash">- - - - - - - - - -</span></span>
           <span class="collab-title">DoorMan | XR Musical</span>
           <span class="collab-role">Sound design</span>
-          <span class="collab-place">Stage 66, Seoul, KR <span class="dash">- - - - - - - - - -</span></span>
+          <span class="collab-place">Stage 66, Seoul, KR</span>
         </div>
         <span class="dash">- - - - - - - - - -</span>
       </div>
@@ -1274,7 +1284,7 @@ function setupNavBars() {
       animBar(svg, 'out');
     });
     barEl.addEventListener('click', () => {
-      toggleSection(barEl.dataset.section);
+      handleBarTap(barEl, barEl.dataset.section);
     });
   });
 
@@ -1316,9 +1326,21 @@ function unpinBar(secId) {
   if (!el) return;
   el.classList.remove('open-bar');
   const slot = el.closest('.nav-slot');
-  if (slot) slot.classList.remove('open-slot');
+  if (slot) slot.classList.remove('open-slot', 'shrunk');
   const s = el.querySelector('svg');
   if (s) animBar(s, 'out');
+}
+
+/* 축소된 바를 누르면 섹션을 접지 않고 바 길이만 원래대로 되돌린다 */
+function handleBarTap(el, sec) {
+  const slot = el.closest('.nav-slot');
+  if (slot && slot.classList.contains('shrunk')) {
+    slot.classList.remove('shrunk');
+    const s = el.querySelector('svg');
+    if (s) setTimeout(() => animBar(s, 'in'), 300);
+    return;
+  }
+  toggleSection(sec);
 }
 
 /* 열린 섹션의 바: 모바일에서는 눕히고, 눕고 난 뒤 글자를 차례로 띄운다 */
@@ -1327,19 +1349,19 @@ function pinBar(secId) {
   if (!el) return;
   el.classList.add('open-bar');
   const slot = el.closest('.nav-slot');
-  if (slot) slot.classList.add('open-slot');
+  if (slot) { slot.classList.add('open-slot'); slot.classList.remove('shrunk'); }
   if (!isMobile()) return;
   const s = el.querySelector('svg');
   if (s) setTimeout(() => animBar(s, 'in'), 380);   // 회전이 끝난 뒤 글자 등장
 
-  // 회전이 끝난 뒤, 눕은 바 바로 아래에서 내용이 시작되게 위 여백을 준다
-  setTimeout(() => {
-    const panel = document.getElementById('panel-' + secId);
-    const area  = document.getElementById('content-area');
-    if (!panel || !area) return;
-    const gap = el.getBoundingClientRect().bottom - area.getBoundingClientRect().top + 14;
+  // 눕은 바 아래에서 내용이 시작되도록 위 여백을 '즉시' 준다.
+  // slot 의 위치는 회전과 무관하게 고정이라 애니메이션 전에 계산해도 정확하다.
+  const area = document.getElementById('content-area');
+  const panel = document.getElementById('panel-' + secId);
+  if (panel && area && slot) {
+    const gap = slot.getBoundingClientRect().top - area.getBoundingClientRect().top + 27 + 14;
     panel.style.paddingTop = Math.max(0, gap) + 'px';
-  }, 380);
+  }
 }
 
 function toggleSection(secId) {
@@ -1422,7 +1444,7 @@ function setupMobileTouch() {
         el.addEventListener('animationend', () => el.classList.remove('wiggling'), { once: true });
         return;
       }
-      toggleSection(sec);
+      handleBarTap(el, sec);
     });
   });
 }
@@ -1503,6 +1525,18 @@ function customScrollbar(el, axis) {
   layout();
 }
 
+/* 모바일: 내용을 스크롤하기 시작하면 눕은 바를 첫 글자만 남기고 줄인다 */
+function setupBarShrinkOnScroll() {
+  const area = document.getElementById('content-area');
+  if (!area) return;
+  area.addEventListener('scroll', () => {
+    if (!isMobile()) return;
+    document
+      .querySelectorAll('.nav-slot.open-slot:not(.shrunk)')
+      .forEach(s => s.classList.add('shrunk'));
+  });
+}
+
 function setupScrollbars() {
   const area = document.getElementById('content-area');
   if (area) customScrollbar(area, 'v');
@@ -1513,6 +1547,7 @@ function setupScrollbars() {
 
 window.addEventListener('DOMContentLoaded', () => {
   setupScrollbars();
+  setupBarShrinkOnScroll();
   document.fonts.ready.then(() => {
     setupNavBars();
     setupMobileTouch();

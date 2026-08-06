@@ -416,7 +416,8 @@
         overflow: hidden;
         justify-content: flex-start;
       }
-      .nav-slot.open-slot.shrunk .nav-bar svg { overflow: hidden; }
+      /* flex 축소를 막아 글자 크기를 원래대로 유지한다 */
+      .nav-slot.open-slot.shrunk .nav-bar svg { overflow: hidden; flex: 0 0 auto; }
       /* 첫 글자만 남기고 나머지 글자는 감춘다 */
       .nav-slot.open-slot.shrunk .nav-bar svg text:nth-of-type(n+2) { display: none; }
 

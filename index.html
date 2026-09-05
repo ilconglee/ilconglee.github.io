@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IlCong Lee</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400&family=IBM+Plex+Sans+KR:wght@200;300;400&family=Noto+Sans+SC:wght@200;300;400&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400&family=IBM+Plex+Sans+KR:wght@200;300;400&family=Noto+Sans+SC:wght@200;300;400&display=swap"
+    rel="stylesheet">
 
   <style>
     /* ── Design tokens ─────────────────────────────────────────── */
@@ -17,13 +20,24 @@
     }
 
     /* ── Reset ─────────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { height: 100%; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      height: 100%;
+    }
+
     body {
       background: var(--bg);
       color: var(--body-text);
       font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
-      font-weight: 200;        /* 본문 — 구분선(.dash)은 한 단계 굵은 300 */
+      font-weight: 200;
+      /* 본문 — 구분선(.dash)은 한 단계 굵은 300 */
       min-height: 100%;
       cursor: none;
       overflow-x: hidden;
@@ -34,24 +48,33 @@
       position: fixed;
       pointer-events: none;
       z-index: 9999;
-      top: -200px; left: -200px;   /* off-screen until first mousemove */
+      top: -200px;
+      left: -200px;
+      /* off-screen until first mousemove */
       transform: rotate(-30deg);
-      transform-origin: 11px 0px;  /* rotate around the tip point */
+      transform-origin: 11px 0px;
+      /* rotate around the tip point */
       shape-rendering: geometricPrecision;
     }
+
     /* Thread behind needle (chain) */
     #thread-canvas-back {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
       z-index: 9998;
     }
+
     /* Thread in front of needle (right-side eye stub) */
     #thread-canvas-front {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
       z-index: 10000;
     }
@@ -59,14 +82,18 @@
     /* ── Fixed header ──────────────────────────────────────────── */
     #header {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 100;
-      padding: 32px 48px 0 48px;  /* 위 32px / 좌우 48px */
+      padding: 32px 48px 0 48px;
+      /* 위 32px / 좌우 48px */
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: flex-start;
-      gap: 104px;                  /* 검은 박스 사이 고정 간격 */
+      gap: 104px;
+      /* 검은 박스 사이 고정 간격 */
       pointer-events: none;
       overflow: hidden;
     }
@@ -85,9 +112,17 @@
       user-select: none;
       flex-shrink: 0;
     }
-    .nav-bar svg { display: block; overflow: visible; shape-rendering: auto; }
+
+    .nav-bar svg {
+      display: block;
+      overflow: visible;
+      shape-rendering: auto;
+    }
+
     /* 데스크톱에서는 slot 이 레이아웃에 관여하지 않는다 */
-    .nav-slot { display: contents; }
+    .nav-slot {
+      display: contents;
+    }
 
     /* ── Black circle ──────────────────────────────────────────── */
     .nav-circle {
@@ -96,37 +131,75 @@
       align-items: center;
       justify-content: center;
       background: var(--bar);
-      width: 27px; height: 27px;
+      width: 27px;
+      height: 27px;
       border-radius: 50%;
       cursor: none;
       user-select: none;
       flex-shrink: 0;
     }
-    .nav-circle svg { display: block; overflow: visible; shape-rendering: auto; }
+
+    .nav-circle svg {
+      display: block;
+      overflow: visible;
+      shape-rendering: auto;
+    }
 
     @keyframes wiggle {
-      0%   { transform: translateX(0); }
-      20%  { transform: translateX(-4px); }
-      45%  { transform: translateX(4px); }
-      65%  { transform: translateX(-3px); }
-      82%  { transform: translateX(2px); }
-      100% { transform: translateX(0); }
+      0% {
+        transform: translateX(0);
+      }
+
+      20% {
+        transform: translateX(-4px);
+      }
+
+      45% {
+        transform: translateX(4px);
+      }
+
+      65% {
+        transform: translateX(-3px);
+      }
+
+      82% {
+        transform: translateX(2px);
+      }
+
+      100% {
+        transform: translateX(0);
+      }
     }
-    .wiggling { animation: wiggle 0.35s ease-out; }
+
+    .wiggling {
+      animation: wiggle 0.35s ease-out;
+    }
 
     /* ── Scrollable content area below fixed header ────────────── */
     #content-area {
       position: fixed;
-      top: 79px;        /* 32px header-top + 27px bar height + 20px gap */
-      left: 0; right: 0;   /* 스크롤바 여백은 JS의 TRACK_PAD 에서 일괄 관리 */
+      top: 79px;
+      /* 32px header-top + 27px bar height + 20px gap */
+      left: 0;
+      right: 0;
+      /* 스크롤바 여백은 JS의 TRACK_PAD 에서 일괄 관리 */
       bottom: 0;
       overflow-y: auto;
       padding: 20px 0 0;
     }
+
     /* 네이티브 스크롤바는 어디서든 숨긴다 (아래 .cbar 로 직접 그림).
        Chrome/Safari/Edge 는 ::-webkit-scrollbar, Firefox 는 scrollbar-width */
-    *::-webkit-scrollbar { width: 0; height: 0; display: none; }
-    * { scrollbar-width: none; -ms-overflow-style: none; }
+    *::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      display: none;
+    }
+
+    * {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
 
     /* 직접 그리는 스크롤바 — 각진 점선, 스크롤 중에만 보임 */
     .cbar {
@@ -136,47 +209,59 @@
       opacity: 0;
       transition: opacity 0.25s ease-out;
     }
-    .cbar.visible { opacity: 1; }
-    .cthumb { position: absolute; top: 0; left: 0; }
-    .cbar-v .cthumb {
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.5) 0 16px,   /* 점 길이 / 투명도 */
-        transparent 16px 24px        /* 간격 */
-      );
+
+    .cbar.visible {
+      opacity: 1;
     }
+
+    .cthumb {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .cbar-v .cthumb {
+      background: repeating-linear-gradient(to bottom,
+          rgba(0, 0, 0, 0.5) 0 16px,
+          /* 점 길이 / 투명도 */
+          transparent 16px 24px
+          /* 간격 */
+        );
+    }
+
     .cbar-h .cthumb {
-      background: repeating-linear-gradient(
-        to right,
-        rgba(0, 0, 0, 0.5) 0 16px,
-        transparent 16px 24px
-      );
+      background: repeating-linear-gradient(to right,
+          rgba(0, 0, 0, 0.5) 0 16px,
+          transparent 16px 24px);
     }
 
     /* ── Section panels ────────────────────────────────────────── */
     .section-panel {
-  position: absolute;
-  top: 20px;
-  left: 0;
-  right: 0;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.3s ease-out, visibility 0s linear 0.3s;
-}
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s ease-out, visibility 0s linear 0.3s;
+    }
 
-.section-panel.open {
-  visibility: visible;
-  pointer-events: auto;
-  transition: opacity 0.3s ease-out;
-}
+    .section-panel.open {
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.3s ease-out;
+    }
 
-.section-panel.visible {
-  opacity: 1;
-}
+    .section-panel.visible {
+      opacity: 1;
+    }
 
     /* ── Section content layout ────────────────────────────────── */
-    .section-body { padding: 0 48px 48px; }
+    .section-body {
+      padding: 0 48px 48px;
+    }
+
     /* 가로 스크롤 섹션은 스크롤바가 화면 끝까지 닿도록
        여백을 section-body가 아니라 스크롤 컨테이너 안쪽에 준다 */
     #panel-performances .section-body,
@@ -184,115 +269,161 @@
       padding: 0;
       height: 100%;
     }
+
     /* 두 패널은 화면 아래까지 채워서 가로 스크롤바가 맨 아래에 오게 한다 */
     #panel-performances,
-    #panel-collaborations { bottom: 0; }
+    #panel-collaborations {
+      bottom: 0;
+    }
 
-/* ── IlCong Lee: 항목명 / 내용 — 2단, 전부 왼쪽 정렬 ── */
-.info-list {
-  font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  line-height: 27px;
-}
-#panel-ilcong .info-row {
-  --col-label: 140px;   /* 첫 단 폭 */
-  --info-gap:   22px;   /* 두 단 사이 여백 */
+    /* ── IlCong Lee: 항목명 / 내용 — 2단, 전부 왼쪽 정렬 ── */
+    .info-list {
+      font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 27px;
+    }
 
-  display: grid;
-  grid-template-columns: var(--col-label) var(--info-gap) 1fr;
-  align-items: start;
-  margin-bottom: 10px;   /* 구분선이 한 줄을 차지하므로 추가 여백 없음 */
-}
-/* Education처럼 여러 줄인 내용: 줄 간격을 다른 섹션의 행 간격과 동일하게 */
-#panel-ilcong .info-content > div + div { margin-top: 10px; }
-#panel-ilcong .info-label   { grid-column: 1; text-align: left; }
-#panel-ilcong .info-content { grid-column: 3; min-width: 0; text-align: left; }
-.info-tags {
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: 36px;
-  row-gap: 0px;
-}
-/* 자기소개 — Tools 줄의 Arduino가 끝나는 지점에서 줄바꿈 */
-#panel-ilcong .info-bio {
-  max-width: 980px;
-}
-/* 구분선 — 본문보다 한 단계 굵게 */
-.dash {
-  font-weight: 200;
-}
-/* 하이픈 위치: 데스크톱은 .dash-d, 모바일은 .dash-m 만 보인다 */
-.dash-m { display: none; }
+    #panel-ilcong .info-row {
+      --col-label: 140px;
+      /* 첫 단 폭 */
+      --info-gap: 22px;
+      /* 두 단 사이 여백 */
 
-/* 항목명·작품 이름만 본문(200)보다 두껍게 — 모바일/데스크톱 공통.
+      display: grid;
+      grid-template-columns: var(--col-label) var(--info-gap) 1fr;
+      align-items: start;
+      margin-bottom: 10px;
+      /* 구분선이 한 줄을 차지하므로 추가 여백 없음 */
+    }
+
+    /* Education처럼 여러 줄인 내용: 줄 간격을 다른 섹션의 행 간격과 동일하게 */
+    #panel-ilcong .info-content>div+div {
+      margin-top: 10px;
+    }
+
+    #panel-ilcong .info-label {
+      grid-column: 1;
+      text-align: left;
+    }
+
+    #panel-ilcong .info-content {
+      grid-column: 3;
+      min-width: 0;
+      text-align: left;
+    }
+
+    .info-tags {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: 36px;
+      row-gap: 0px;
+    }
+
+    /* 자기소개 — Tools 줄의 Arduino가 끝나는 지점에서 줄바꿈 */
+    #panel-ilcong .info-bio {
+      max-width: 980px;
+    }
+
+    /* 구분선 — 본문보다 한 단계 굵게 */
+    .dash {
+      font-weight: 200;
+    }
+
+    /* 하이픈 위치: 데스크톱은 .dash-d, 모바일은 .dash-m 만 보인다 */
+    .dash-m {
+      display: none;
+    }
+
+    /* 항목명·작품 이름만 본문(200)보다 두껍게 — 모바일/데스크톱 공통.
    'for ...', '| Art game' 같은 부연은 .nm 밖이라 얇게 남는다 */
-.info-label,
-.contact-label,
-.nm {
-  font-weight: 400;
-}
-/* IlCong Lee: 구분선이 항목 아래 한 줄을 통째로 차지 */
-#panel-ilcong .dash { grid-column: 1 / -1; }
+    .info-label,
+    .contact-label,
+    .nm {
+      font-weight: 400;
+    }
 
-/* ── Performances / Collaborations 공통 단 규격 ──────────────────
+    /* IlCong Lee: 구분선이 항목 아래 한 줄을 통째로 차지 */
+    #panel-ilcong .dash {
+      grid-column: 1 / -1;
+    }
+
+    /* ── Performances / Collaborations 공통 단 규격 ──────────────────
    두 섹션이 같은 x 위치에서 시작하도록 트랙을 공유한다.
    Performances는 '역할' 단이 없으므로 제목이 그 자리까지 이어진다. */
-#panel-performances .info-list,
-.collab-list {
-  height: 100%;          /* 스크롤바가 패널 맨 아래에 위치 */
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 0 48px;       /* 좌우 여백 */
-}
-#panel-performances .info-row,
-.collab-row {
-  /* 각 단의 폭 */
-  --col-year:  140px;
-  --col-title: 240px;
-  --col-role:  180px;
-  /* 단 사이 여백 — 각각 따로 조절 */
-  --gap-1: 22px;   /* 날짜 ↔ 제목 */
-  --gap-2: 48px;   /* 제목 ↔ 역할 */
-  --gap-3: 62px;   /* 역할 ↔ 장소 */
+    #panel-performances .info-list,
+    .collab-list {
+      height: 100%;
+      /* 스크롤바가 패널 맨 아래에 위치 */
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0 48px;
+      /* 좌우 여백 */
+    }
 
-  display: grid;
-  grid-template-columns:
-    var(--col-year)  var(--gap-1)
-    var(--col-title) var(--gap-2)
-    var(--col-role)  var(--gap-3)
-    max-content;
-  column-gap: 0;
-  align-items: start;
-  width: max-content;    /* 내용만큼 늘어남 — 절대 접히지 않음 */
-  margin-bottom: 10px;
-}
-#panel-performances .info-row > span,
-.collab-row > span {
-  text-align: left;
-  white-space: nowrap;   /* 한 줄 유지 → 모든 행 높이가 37px로 동일 */
-}
+    #panel-performances .info-row,
+    .collab-row {
+      /* 각 단의 폭 */
+      --col-year: 140px;
+      --col-title: 240px;
+      --col-role: 180px;
+      /* 단 사이 여백 — 각각 따로 조절 */
+      --gap-1: 22px;
+      /* 날짜 ↔ 제목 */
+      --gap-2: 48px;
+      /* 제목 ↔ 역할 */
+      --gap-3: 62px;
+      /* 역할 ↔ 장소 */
 
-/* 날짜 */
-#panel-performances .info-year,
-.collab-year {
-  grid-column: 1;
-  font-variant-numeric: tabular-nums;
-}
-/* 제목 — Performances는 '역할' 단까지 걸쳐 씀 */
-#panel-performances .info-title { grid-column: 3 / 6; }
-.collab-title                   { grid-column: 3; }
-/* 역할 — Collaborations 전용 */
-.collab-role { grid-column: 5; }
-/* 장소 */
-#panel-performances .info-place,
-.collab-place { grid-column: 7; }
+      display: grid;
+      grid-template-columns:
+        var(--col-year) var(--gap-1) var(--col-title) var(--gap-2) var(--col-role) var(--gap-3) max-content;
+      column-gap: 0;
+      align-items: start;
+      width: max-content;
+      /* 내용만큼 늘어남 — 절대 접히지 않음 */
+      margin-bottom: 10px;
+    }
 
-/* ── Collaborations 목록 서체 ─────────────────────────────────── */
-.collab-list {
-  font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  line-height: 27px;
-}
+    #panel-performances .info-row>span,
+    .collab-row>span {
+      text-align: left;
+      white-space: nowrap;
+      /* 한 줄 유지 → 모든 행 높이가 37px로 동일 */
+    }
+
+    /* 날짜 */
+    #panel-performances .info-year,
+    .collab-year {
+      grid-column: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* 제목 — Performances는 '역할' 단까지 걸쳐 씀 */
+    #panel-performances .info-title {
+      grid-column: 3 / 6;
+    }
+
+    .collab-title {
+      grid-column: 3;
+    }
+
+    /* 역할 — Collaborations 전용 */
+    .collab-role {
+      grid-column: 5;
+    }
+
+    /* 장소 */
+    #panel-performances .info-place,
+    .collab-place {
+      grid-column: 7;
+    }
+
+    /* ── Collaborations 목록 서체 ─────────────────────────────────── */
+    .collab-list {
+      font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 27px;
+    }
 
     /* ── Works ─────────────────────────────────────────────────── */
     .work-item {
@@ -301,7 +432,8 @@
       flex-direction: column;
       align-items: flex-start;
       gap: 4px;
-      margin-bottom: 144px;   /* 항목 사이 세로 간격 */
+      margin-bottom: 144px;
+      /* 항목 사이 세로 간격 */
     }
 
     /* Title line above the thumbnail — name left, year right-aligned to thumb edge */
@@ -313,17 +445,23 @@
       gap: 20px;
       font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
       font-size: 13px;
-      line-height: 27px;   /* 다른 섹션과 동일 — 첫 줄 시작 위치가 맞음 */
+      line-height: 27px;
+      /* 다른 섹션과 동일 — 첫 줄 시작 위치가 맞음 */
       letter-spacing: 0.01em;
       margin-bottom: 0;
     }
+
     .work-name {
       flex: 0 1 auto;
       min-width: 0;
       color: inherit;
       text-decoration: none;
     }
-    a.work-name:hover { text-decoration: underline; }
+
+    a.work-name:hover {
+      text-decoration: underline;
+    }
+
     .work-year {
       flex: 0 0 auto;
       font-variant-numeric: tabular-nums;
@@ -331,8 +469,15 @@
 
     /* Thumbnail — large, like ryojiikeda.com */
     .work-thumb-link,
-    .work-coming-soon { width: var(--work-w); }
-    .work-thumb-link { display: block; line-height: 0; }
+    .work-coming-soon {
+      width: var(--work-w);
+    }
+
+    .work-thumb-link {
+      display: block;
+      line-height: 0;
+    }
+
     .work-thumb {
       display: block;
       width: 100%;
@@ -341,6 +486,7 @@
       object-fit: cover;
       border: 1px solid #ddd;
     }
+
     .work-coming-soon {
       aspect-ratio: 16 / 9;
       background: #f2f2f2;
@@ -354,42 +500,68 @@
     }
 
     /* ── Contact ────────────────────────────────────────────────── */
-.contact-list {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;   /* Performances / Collaborations 행 간격과 동일 */
-  font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  line-height: 27px;
-}
-.contact-link {
-  color: inherit;
-  text-decoration: none;
-}
-.contact-link:hover { text-decoration: underline; }
-/* 'e-mail |', 'instagram |' 는 링크가 아닌 일반 텍스트 */
-.contact-row { display: flex; gap: 5px; }
-/* 구분자 '|' — 세로획이라 웨이트만으로는 얇아지지 않아 가로로 눌러 얇게 만든다 */
-.sep {
-  font-weight: 200;
-  display: inline-block;
-  transform: scaleX(0.55);   /* 값이 작을수록 얇아짐 */
-}
-.contact-label { color: inherit; }
-/* 구분선은 내용에 바로 붙음 — IlCong Lee / Performances / Collaborations와 동일 */
-.contact-list .dash { margin-top: -10px; }
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      /* Performances / Collaborations 행 간격과 동일 */
+      font-family: 'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 27px;
+    }
+
+    .contact-link {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .contact-link:hover {
+      text-decoration: underline;
+    }
+
+    /* 'e-mail |', 'instagram |' 는 링크가 아닌 일반 텍스트 */
+    .contact-row {
+      display: flex;
+      gap: 5px;
+    }
+
+    /* 구분자 '|' — 세로획이라 웨이트만으로는 얇아지지 않아 가로로 눌러 얇게 만든다 */
+    .sep {
+      font-weight: 200;
+      display: inline-block;
+      transform: scaleX(0.55);
+      /* 값이 작을수록 얇아짐 */
+    }
+
+    .contact-label {
+      color: inherit;
+    }
+
+    /* 구분선은 내용에 바로 붙음 — IlCong Lee / Performances / Collaborations와 동일 */
+    .contact-list .dash {
+      margin-top: -10px;
+    }
 
     /* ── Mobile ─────────────────────────────────────────────────── */
     @media (max-width: 768px) {
-      body { cursor: auto; }
-      #needle-svg, #thread-canvas-back, #thread-canvas-front { display: none; }
+      body {
+        cursor: auto;
+      }
+
+      #needle-svg,
+      #thread-canvas-back,
+      #thread-canvas-front {
+        display: none;
+      }
 
       /* 검은 박스: 왼쪽 세로 열에 세워두고, 누른 것만 회전해서 눕는다.
          열 폭은 27px 로 고정 — 눕은 바는 오른쪽 내용 영역 위로 뻗어나간다 */
       #header {
         position: fixed;
-        top: 0; left: 0; bottom: 0;
+        top: 0;
+        left: 0;
+        bottom: 0;
         width: auto;
         flex-direction: column;
         align-items: flex-start;
@@ -398,28 +570,46 @@
         padding: 24px 0 0 20px;
         overflow: visible;
       }
+
       .nav-slot {
         display: block;
         position: relative;
-        width: 27px;                 /* 열려도 열 폭은 그대로 */
+        width: 27px;
+        /* 열려도 열 폭은 그대로 */
         height: var(--bar-len);
         flex-shrink: 0;
         transition: height 0.35s ease-out;
       }
-      .nav-slot.open-slot { height: 27px; }
+
+      .nav-slot.open-slot {
+        height: 27px;
+      }
 
       .nav-bar {
         position: absolute;
-        top: 0; left: 0;
-        width: var(--bar-len) !important;   /* JS 인라인 width 를 덮어씀 */
+        top: 0;
+        left: 0;
+        width: var(--bar-len) !important;
+        /* JS 인라인 width 를 덮어씀 */
         height: 27px;
         transform: translateY(var(--bar-len)) rotate(-90deg);
         transform-origin: left top;
         transition: transform 0.35s ease-out, width 0.3s ease-out;
       }
-      .nav-slot.open-slot .nav-bar { transform: none; }
-      .nav-bar svg { display: none; }               /* 세워둔 동안은 글자를 감춘다 */
-      .nav-slot.open-slot .nav-bar svg { display: block; flex: 0 0 auto; }
+
+      .nav-slot.open-slot .nav-bar {
+        transform: none;
+      }
+
+      .nav-bar svg {
+        display: none;
+      }
+
+      /* 세워둔 동안은 글자를 감춘다 */
+      .nav-slot.open-slot .nav-bar svg {
+        display: block;
+        flex: 0 0 auto;
+      }
 
       /* 스크롤을 시작하면 눕은 바가 세로 바 폭까지 줄어 첫 글자만 남는다.
          내용은 그대로 두고 바 길이만 바뀐다. 다시 누르면 원래대로. */
@@ -429,6 +619,7 @@
         overflow: hidden;
         justify-content: flex-start;
       }
+
       /* 폭을 명시해 flex 축소를 원천 차단 — 글자 크기가 눕었을 때와 같다.
          --bar-len 은 글자 폭 + 좌우 padding 28px 이므로 28 을 뺀다 */
       .nav-slot.open-slot.shrunk .nav-bar svg {
@@ -438,32 +629,62 @@
         height: 27px;
         max-width: none;
       }
-      /* 첫 글자만 남기고 나머지 글자는 감춘다 */
-      .nav-slot.open-slot.shrunk .nav-bar svg text:nth-of-type(n+2) { display: none; }
 
-      .nav-circle { position: absolute; top: 0; left: 0; }
-      .nav-bar, .nav-circle { cursor: pointer; }
-      .contact-link { cursor: pointer; }
+      /* 첫 글자만 남기고 나머지 글자는 감춘다 */
+      .nav-slot.open-slot.shrunk .nav-bar svg text:nth-of-type(n+2) {
+        display: none;
+      }
+
+      .nav-circle {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .nav-bar,
+      .nav-circle {
+        cursor: pointer;
+      }
+
+      .contact-link {
+        cursor: pointer;
+      }
 
       /* 내용은 검은 열 오른쪽 영역에 */
       #content-area {
         position: fixed;
-        top: 0; left: 67px;   /* 20(좌여백) + 27(열 폭) + 20(간격) */
-        right: 0; bottom: 0;
+        top: 0;
+        left: 67px;
+        /* 20(좌여백) + 27(열 폭) + 20(간격) */
+        right: 0;
+        bottom: 0;
         padding: 24px 20px 60px 0;
         overflow-y: auto;
       }
+
       .section-panel {
         position: static;
         display: none;
       }
-      .section-panel.open { display: block; }
 
-      .section-body { padding: 0 0 48px; }
+      .section-panel.open {
+        display: block;
+      }
+
+      .section-body {
+        padding: 0 0 48px;
+      }
+
       #panel-performances,
-      #panel-collaborations { bottom: auto; }
+      #panel-collaborations {
+        bottom: auto;
+      }
+
       #panel-performances .section-body,
-      #panel-collaborations .section-body { padding: 0 0 48px; height: auto; }
+      #panel-collaborations .section-body {
+        padding: 0 0 48px;
+        height: auto;
+      }
 
       /* 가로로 넘치던 목록은 전부 줄바꿈 */
       #panel-performances .info-list,
@@ -473,14 +694,16 @@
         overflow-y: visible;
         padding: 0;
       }
+
       #panel-performances .info-row,
       .collab-row {
         display: block;
         width: auto;
         margin-bottom: 24px;
       }
-      #panel-performances .info-row > span,
-      .collab-row > span {
+
+      #panel-performances .info-row>span,
+      .collab-row>span {
         display: block;
         white-space: normal;
       }
@@ -490,1112 +713,1154 @@
         grid-template-columns: 1fr;
         margin-bottom: 37px;
       }
+
       #panel-ilcong .info-label,
-      #panel-ilcong .info-content { grid-column: 1; }
-      #panel-ilcong .info-bio { max-width: none; }
+      #panel-ilcong .info-content {
+        grid-column: 1;
+      }
+
+      #panel-ilcong .info-bio {
+        max-width: none;
+      }
+
       /* '|' 뒤에서 줄바꿈 */
-      .brk { display: block; }
+      .brk {
+        display: block;
+      }
+
       /* 하이픈을 날짜 / 첫 줄 옆으로 */
-      .dash-d { display: none; }
-      .dash-m { display: inline; }
+      .dash-d {
+        display: none;
+      }
+
+      .dash-m {
+        display: inline;
+      }
 
       /* Works: 썸네일 전폭, 제목 줄도 넘치면 줄바꿈 */
       .work-item {
         --work-w: 100%;
         margin-bottom: 96px;
       }
-      .work-title { flex-wrap: wrap; gap: 0; }
-      .work-name, .work-year { flex: 0 0 auto; }
+
+      .work-title {
+        flex-wrap: wrap;
+        gap: 0;
+      }
+
+      .work-name,
+      .work-year {
+        flex: 0 0 auto;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<!-- Thread behind needle -->
-<canvas id="thread-canvas-back"></canvas>
-<!-- Thread in front of needle (right-side eye stub) -->
-<canvas id="thread-canvas-front"></canvas>
+  <!-- Thread behind needle -->
+  <canvas id="thread-canvas-back"></canvas>
+  <!-- Thread in front of needle (right-side eye stub) -->
+  <canvas id="thread-canvas-front"></canvas>
 
-<!--
+  <!--
   Needle SVG.
   Viewbox 0 0 22 60. Tip at (11, 0), bottom at (11, 60).
   CSS sets transform-origin: 11px 0px (the tip).
   JS sets left = mouseX - 11, top = mouseY.
   After 13° clockwise rotation around (11, 0), the tip stays at (mouseX, mouseY).
 -->
-<svg id="needle-svg" width="22" height="60" viewBox="0 0 22 60" xmlns="http://www.w3.org/2000/svg">
-  <!-- Lenticular body: smooth symmetric lens, tip at top -->
-  <path d="M11,0 C15.6,7 17.5,19 17.5,30 C17.5,43 14.8,53 11,60 C7.2,53 4.5,43 4.5,30 C4.5,19 6.4,7 11,0 Z"
-        fill="#888888"/>
-  <!-- Eye (hole) near blunt end — anatomically correct -->
-  <ellipse cx="11" cy="47" rx="2.6" ry="4" fill="#ffffff"/>
-</svg>
+  <svg id="needle-svg" width="22" height="60" viewBox="0 0 22 60" xmlns="http://www.w3.org/2000/svg">
+    <!-- Lenticular body: smooth symmetric lens, tip at top -->
+    <path d="M11,0 C15.6,7 17.5,19 17.5,30 C17.5,43 14.8,53 11,60 C7.2,53 4.5,43 4.5,30 C4.5,19 6.4,7 11,0 Z"
+      fill="#888888" />
+    <!-- Eye (hole) near blunt end — anatomically correct -->
+    <ellipse cx="11" cy="47" rx="2.6" ry="4" fill="#ffffff" />
+  </svg>
 
-<!-- Fixed header -->
-<header id="header">
-  <div class="nav-bar"    id="bar-ilcong"       data-section="ilcong"       data-label="ILCONG LEE"></div>
-  <div class="nav-bar"    id="bar-performances" data-section="performances" data-label="PERFORMANCES"></div>
-  <div class="nav-bar"    id="bar-collaborations"     data-section="collaborations"     data-label="COLLABORATIONS"></div>
-  <div class="nav-bar"    id="bar-works"        data-section="works"        data-label="WORKS"></div>
-  <div class="nav-bar"    id="bar-contact"      data-section="contact"      data-label="CONTACT"></div>
-  <div class="nav-circle" id="bar-hash"         data-section="hash"         data-label="#"></div>
-</header>
+  <!-- Fixed header -->
+  <header id="header">
+    <div class="nav-bar" id="bar-ilcong" data-section="ilcong" data-label="ILCONG LEE"></div>
+    <div class="nav-bar" id="bar-performances" data-section="performances" data-label="PERFORMANCES"></div>
+    <div class="nav-bar" id="bar-collaborations" data-section="collaborations" data-label="COLLABORATIONS"></div>
+    <div class="nav-bar" id="bar-works" data-section="works" data-label="WORKS"></div>
+    <div class="nav-bar" id="bar-contact" data-section="contact" data-label="CONTACT"></div>
+    <div class="nav-circle" id="bar-hash" data-section="hash" data-label="#"></div>
+  </header>
 
-<!-- Scrollable content panels -->
-<div id="content-area">
+  <!-- Scrollable content panels -->
+  <div id="content-area">
 
-  <!-- A. IlCong Lee -->
-  <div class="section-panel" id="panel-ilcong">
-    <div class="section-body">
-      <div class="info-list">
+    <!-- A. IlCong Lee -->
+    <div class="section-panel" id="panel-ilcong">
+      <div class="section-body">
+        <div class="info-list">
 
-        <div class="info-row">
-          <span class="info-label">Education <span class="dash dash-m">- - - - -</span></span>
-          <div class="info-content">
-            <div>
-              <span class="brk">Korea National University of Arts |</span>
-              <span class="brk">M.A. in Musical Technology <span class="dash dash-d">- - - - -</span></span>
+          <div class="info-row">
+            <span class="info-label">Education <span class="dash dash-m">- - - - -</span></span>
+            <div class="info-content">
+              <div>
+                <span class="brk">Korea National University of Arts |</span>
+                <span class="brk">M.A. in Musical Technology <span class="dash dash-d">- - - - -</span></span>
+              </div>
+              <div>
+                <span class="brk">Sookmyung Women's University |</span>
+                <span class="brk">B.M. in Composition <span class="dash dash-d">- - - - -</span></span>
+              </div>
             </div>
-            <div>
-              <span class="brk">Sookmyung Women's University |</span>
-              <span class="brk">B.M. in Composition <span class="dash dash-d">- - - - -</span></span>
+            <span class="dash">- - - - - - - - - -</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Skills <span class="dash dash-m">- - - - -</span></span>
+            <div class="info-content info-tags">
+              <span>LiveElectronics</span>
+              <span>Multichannel</span>
+              <span>Acoustics</span>
+              <span>Recording</span>
+              <span>Mixing/Mastering</span>
+              <span>SoundDesign</span>
+              <span>AudioVisual</span>
+              <span>AmbienceSound</span>
+              <span>AmbientMusic</span>
             </div>
+            <span class="dash">- - - - - - - - - -</span>
           </div>
-          <span class="dash">- - - - - - - - - -</span>
-        </div>
 
-        <div class="info-row">
-          <span class="info-label">Skills <span class="dash dash-m">- - - - -</span></span>
-          <div class="info-content info-tags">
-            <span>LiveElectronics</span>
-            <span>Multichannel</span>
-            <span>Acoustics</span>
-            <span>Recording</span>
-            <span>Mixing/Mastering</span>
-            <span>SoundDesign</span>
-            <span>AudioVisual</span>
-            <span>AmbienceSound</span>
-            <span>AmbientMusic</span>
+          <div class="info-row">
+            <span class="info-label">Tools <span class="dash dash-m">- - - - -</span></span>
+            <div class="info-content info-tags">
+              <span>MAX/MSP/Jitter</span>
+              <span>RNBO</span>
+              <span>SuperCollider</span>
+              <span>AbletonLive</span>
+              <span>Protools</span>
+              <span>Sibelius</span>
+              <span>Arduino</span>
+            </div>
+            <span class="dash">- - - - - - - - - -</span>
           </div>
-          <span class="dash">- - - - - - - - - -</span>
-        </div>
 
-        <div class="info-row">
-          <span class="info-label">Tools <span class="dash dash-m">- - - - -</span></span>
-          <div class="info-content info-tags">
-            <span>MAX/MSP/Jitter</span>
-            <span>RNBO</span>
-            <span>SuperCollider</span>
-            <span>AbletonLive</span>
-            <span>Protools</span>
-            <span>Sibelius</span>
-            <span>Arduino</span>
+          <div class="info-row">
+            <span class="info-label">Wonbin Lee <span class="dash dash-m">- - - - -</span></span>
+            <div class="info-content info-bio">As a sound artist and composer, Wonbin Lee weaves the structures of sound
+              and music. She finds musical material in traditional domestic labor connected through thread, using sound
+              to record labor that has gone unrecorded.</div>
+            <span class="dash">- - - - - - - - - -</span>
           </div>
-          <span class="dash">- - - - - - - - - -</span>
-        </div>
 
-        <div class="info-row">
-          <span class="info-label">Wonbin Lee <span class="dash dash-m">- - - - -</span></span>
-          <div class="info-content info-bio">As a sound artist and composer, Wonbin Lee weaves the structures of sound and music. She finds musical material in traditional domestic labor connected through thread, using sound to record labor that has gone unrecorded.</div>
-          <span class="dash">- - - - - - - - - -</span>
         </div>
-
       </div>
     </div>
-  </div>
 
-  <!-- B. Performances -->
-  <div class="section-panel" id="panel-performances">
-    <div class="section-body">
-      <div class="info-list">
-        <div class="info-row">
-          <span class="info-year">Sep 16, 2026 <span class="dash dash-m">- - - - -</span></span>
-          <span class="info-title"><span class="nm">'인고침 (忍苦砧)'</span> for 다듬잇돌 and Live Electronics</span>
-          <span class="info-place">Fest-M 2026 | Chamber Hall, Yonsei University, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
+    <!-- B. Performances -->
+    <div class="section-panel" id="panel-performances">
+      <div class="section-body">
+        <div class="info-list">
+          <div class="info-row">
+            <span class="info-year">Sep 16, 2026 <span class="dash dash-m">- - - - -</span></span>
+            <span class="info-title"><span class="nm">'인고침 (忍苦砧)'</span> for 다듬잇돌 and Live Electronics</span>
+            <span class="info-place">Fest-M 2026 | Chamber Hall, Yonsei University, Seoul, KR <span
+                class="dash dash-d">- - - - -</span></span>
+          </div>
+          <div class="info-row">
+            <span class="info-year">Dec 20 - 21, 2024 <span class="dash dash-m">- - - - -</span></span>
+            <span class="info-title"><span class="nm">'Übermensch'</span> for 2ch Tape</span>
+            <span class="info-place">WOCMAT 2024 | Kainan University, Taoyuan, TW <span class="dash dash-d">- - - -
+                -</span></span>
+          </div>
+          <div class="info-row">
+            <span class="info-year">Sep 25, 2024 <span class="dash dash-m">- - - - -</span></span>
+            <span class="info-title"><span class="nm">'Increasing'</span> for Live Performance</span>
+            <span class="info-place">ONGs - SEAC 9th New Music Concert | Music Space GF, Heukseok, Seoul, KR <span
+                class="dash dash-d">- - - - -</span></span>
+          </div>
+          <div class="info-row">
+            <span class="info-year">Sep 4, 2024 <span class="dash dash-m">- - - - -</span></span>
+            <span class="info-title"><span class="nm">'Trolley'</span> for Tuba and Live Electronics</span>
+            <span class="info-place">Fest-M 2024 | CKL Stage, Seoul, KR <span class="dash dash-d">- - - -
+                -</span></span>
+          </div>
+          <div class="info-row">
+            <span class="info-year">Nov 11, 2023 <span class="dash dash-m">- - - - -</span></span>
+            <span class="info-title"><span class="nm">'The Little Voice In My Head'</span> for Violin and
+              Electronics</span>
+            <span class="info-place">DICMF 2023 | Suchang Hall, Daegu Arts Factory, Daegu, KR <span
+                class="dash dash-d">- - - - -</span></span>
+          </div>
+          <div class="info-row">
+            <span class="info-year">Oct 18, 2023 <span class="dash dash-m">- - - - -</span></span>
+            <span class="info-title"><span class="nm">'The Little Voice In My Head'</span> for Violin and
+              Electronics</span>
+            <span class="info-place">ICMC 2023 | School of Music, The Chinese University of Hong Kong, Shenzhen, HK
+              <span class="dash dash-d">- - - - -</span></span>
+          </div>
+          <div class="info-row">
+            <span class="info-year">May 14, 2023 <span class="dash dash-m">- - - - -</span></span>
+            <span class="info-title"><span class="nm">'The Little Voice In My Head'</span> for Violin and
+              Electronics</span>
+            <span class="info-place">Fest-M 2023 | Seoul National University of Education, Seoul, KR <span
+                class="dash dash-d">- - - - -</span></span>
+          </div>
+          <span class="dash">- - - - - - - - - -</span>
         </div>
-        <div class="info-row">
-          <span class="info-year">Dec 20 - 21, 2024 <span class="dash dash-m">- - - - -</span></span>
-          <span class="info-title"><span class="nm">'Übermensch'</span> for 2ch Tape</span>
-          <span class="info-place">WOCMAT 2024 | Kainan University, Taoyuan, TW <span class="dash dash-d">- - - - -</span></span>
+      </div>
+    </div>
+
+    <!-- C. Collaborations -->
+    <div class="section-panel" id="panel-collaborations">
+      <div class="section-body">
+        <div class="collab-list">
+          <div class="collab-row">
+            <span class="collab-year">Nov, 2026 <span class="dash dash-m">- - - - -</span></span>
+            <span class="collab-title"><span class="nm">SYZYGY</span> | Art game</span>
+            <span class="collab-role">Sound System Develop / BGM</span>
+            <span class="collab-place">ArtCollider Lab, Seoul, KR (Upcoming) <span class="dash dash-d">- - - -
+                -</span></span>
+          </div>
+          <div class="collab-row">
+            <span class="collab-year">Sep 9 - 13, 2026 <span class="dash dash-m">- - - - -</span></span>
+            <span class="collab-title"><span class="nm">I Love You, Customers :)</span> | VR Game</span>
+            <span class="collab-role">BGM, Sound design</span>
+            <span class="collab-place">Ars Electronica Festival, Linz, AT (Upcoming) <span class="dash dash-d">- - - -
+                -</span></span>
+          </div>
+          <div class="collab-row">
+            <span class="collab-year">Dec 15 - 18, 2025 <span class="dash dash-m">- - - - -</span></span>
+            <span class="collab-title"><span class="nm">I Love You, Customers :)</span> | VR Game</span>
+            <span class="collab-role">BGM, Sound design</span>
+            <span class="collab-place">SIGGRAPH ASIA, Convention and Exhibition Center, HK <span class="dash dash-d">- -
+                - - -</span></span>
+          </div>
+          <div class="collab-row">
+            <span class="collab-year">Dec 4 - 6, 2025 <span class="dash dash-m">- - - - -</span></span>
+            <span class="collab-title"><span class="nm">SYZYGY</span> | Art game</span>
+            <span class="collab-role">Sound System Develop / BGM</span>
+            <span class="collab-place">Arts Korea Lab, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
+          </div>
+          <div class="collab-row">
+            <span class="collab-year">2025 <span class="dash dash-m">- - - - -</span></span>
+            <span class="collab-title"><span class="nm">PlantCare Simulator</span> | VR Game</span>
+            <span class="collab-role">BGM</span>
+            <span class="collab-place">VCU, VA, US <span class="dash dash-d">- - - - -</span></span>
+          </div>
+          <div class="collab-row">
+            <span class="collab-year">Jan 9 - 11, 2025 <span class="dash dash-m">- - - - -</span></span>
+            <span class="collab-title"><span class="nm">Hana : Starting Over</span> | XR Musical</span>
+            <span class="collab-role">Sound design</span>
+            <span class="collab-place">CKL Stage, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
+          </div>
+          <div class="collab-row">
+            <span class="collab-year">Dec 4 - 6, 2024 <span class="dash dash-m">- - - - -</span></span>
+            <span class="collab-title"><span class="nm">Hana : Starting Over</span> | XR Musical</span>
+            <span class="collab-role">Sound design</span>
+            <span class="collab-place">SIGGRAPH ASIA, International Forum, Tokyo, JP <span class="dash dash-d">- - - -
+                -</span></span>
+          </div>
+          <div class="collab-row">
+            <span class="collab-year">Oct 10, 2024 <span class="dash dash-m">- - - - -</span></span>
+            <span class="collab-title"><span class="nm">DoorMan</span> | XR Musical</span>
+            <span class="collab-role">Sound design</span>
+            <span class="collab-place">Stage 66, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
+          </div>
+          <span class="dash">- - - - - - - - - -</span>
         </div>
-        <div class="info-row">
-          <span class="info-year">Sep 25, 2024 <span class="dash dash-m">- - - - -</span></span>
-          <span class="info-title"><span class="nm">'Increasing'</span> for Live Performance</span>
-          <span class="info-place">ONGs - SEAC 9th New Music Concert | Music Space GF, Heukseok, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
+      </div>
+    </div>
+
+    <!-- D. Works -->
+    <div class="section-panel" id="panel-works">
+      <div class="section-body">
+
+        <div class="work-item">
+          <div class="work-title">
+            <a class="work-name" href="https://youtu.be/H0Ah2hXy-88" target="_blank" rel="noopener noreferrer"><span
+                class="nm">'인고침 (忍苦砧)'</span> for 다듬잇돌 and Live Electronics</a>
+            <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2026</span>
+          </div>
+          <a class="work-thumb-link" href="https://youtu.be/H0Ah2hXy-88" target="_blank" rel="noopener noreferrer">
+            <img class="work-thumb" src="https://img.youtube.com/vi/H0Ah2hXy-88/maxresdefault.jpg"
+              onerror="this.onerror=null;this.src='https://img.youtube.com/vi/H0Ah2hXy-88/hqdefault.jpg';" alt="인고침"
+              loading="lazy">
+          </a>
         </div>
-        <div class="info-row">
-          <span class="info-year">Sep 4, 2024 <span class="dash dash-m">- - - - -</span></span>
-          <span class="info-title"><span class="nm">'Trolley'</span> for Tuba and Live Electronics</span>
-          <span class="info-place">Fest-M 2024 | CKL Stage, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
+
+        <div class="work-item">
+          <div class="work-title">
+            <a class="work-name" href="https://youtu.be/Tch5AWKle9g" target="_blank" rel="noopener noreferrer"><span
+                class="nm">'天地人'</span> for One Performer and Sewing Machine with Arduino</a>
+            <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
+          </div>
+          <a class="work-thumb-link" href="https://youtu.be/Tch5AWKle9g" target="_blank" rel="noopener noreferrer">
+            <img class="work-thumb" src="https://img.youtube.com/vi/Tch5AWKle9g/maxresdefault.jpg"
+              onerror="this.onerror=null;this.src='https://img.youtube.com/vi/Tch5AWKle9g/hqdefault.jpg';" alt="天地人"
+              loading="lazy">
+          </a>
         </div>
-        <div class="info-row">
-          <span class="info-year">Nov 11, 2023 <span class="dash dash-m">- - - - -</span></span>
-          <span class="info-title"><span class="nm">'The Little Voice In My Head'</span> for Violin and Electronics</span>
-          <span class="info-place">DICMF 2023 | Suchang Hall, Daegu Arts Factory, Daegu, KR <span class="dash dash-d">- - - - -</span></span>
+
+        <div class="work-item">
+          <div class="work-title">
+            <a class="work-name" href="https://youtu.be/GCeSyo8p-6E" target="_blank" rel="noopener noreferrer"><span
+                class="nm">'Geliocentric'</span> for 6ch Live Electronics</a>
+            <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2024</span>
+          </div>
+          <a class="work-thumb-link" href="https://youtu.be/GCeSyo8p-6E" target="_blank" rel="noopener noreferrer">
+            <img class="work-thumb" src="https://img.youtube.com/vi/GCeSyo8p-6E/maxresdefault.jpg"
+              onerror="this.onerror=null;this.src='https://img.youtube.com/vi/GCeSyo8p-6E/hqdefault.jpg';"
+              alt="Geliocentric" loading="lazy">
+          </a>
         </div>
-        <div class="info-row">
-          <span class="info-year">Oct 18, 2023 <span class="dash dash-m">- - - - -</span></span>
-          <span class="info-title"><span class="nm">'The Little Voice In My Head'</span> for Violin and Electronics</span>
-          <span class="info-place">ICMC 2023 | School of Music, The Chinese University of Hong Kong, Shenzhen, HK <span class="dash dash-d">- - - - -</span></span>
+
+        <div class="work-item">
+          <div class="work-title">
+            <a class="work-name" href="https://youtu.be/1Zt9EetgQkI" target="_blank" rel="noopener noreferrer"><span
+                class="nm">'Übermensch'</span> for 2ch Tape</a>
+            <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2024</span>
+          </div>
+          <a class="work-thumb-link" href="https://youtu.be/1Zt9EetgQkI" target="_blank" rel="noopener noreferrer">
+            <img class="work-thumb" src="https://img.youtube.com/vi/1Zt9EetgQkI/maxresdefault.jpg"
+              onerror="this.onerror=null;this.src='https://img.youtube.com/vi/1Zt9EetgQkI/hqdefault.jpg';"
+              alt="Übermensch" loading="lazy">
+          </a>
         </div>
-        <div class="info-row">
-          <span class="info-year">May 14, 2023 <span class="dash dash-m">- - - - -</span></span>
-          <span class="info-title"><span class="nm">'The Little Voice In My Head'</span> for Violin and Electronics</span>
-          <span class="info-place">Fest-M 2023 | Seoul National University of Education, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
+
+        <!-- No link, Coming Soon -->
+        <div class="work-item">
+          <div class="work-title">
+            <span class="work-name"><span class="nm">SYZYGY</span></span>
+            <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
+          </div>
+          <div class="work-coming-soon">Coming Soon</div>
+        </div>
+
+        <!-- No link, Coming Soon -->
+        <div class="work-item">
+          <div class="work-title">
+            <span class="work-name"><span class="nm">I Love You, Customers :)</span></span>
+            <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
+          </div>
+          <div class="work-coming-soon">Coming Soon</div>
+        </div>
+
+        <!-- No link, Coming Soon -->
+        <div class="work-item">
+          <div class="work-title">
+            <span class="work-name"><span class="nm">PlantCare Simulator</span></span>
+            <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
+          </div>
+          <div class="work-coming-soon">Coming Soon</div>
         </div>
         <span class="dash">- - - - - - - - - -</span>
       </div>
     </div>
-  </div>
 
-  <!-- C. Collaborations -->
-  <div class="section-panel" id="panel-collaborations">
-    <div class="section-body">
-      <div class="collab-list">
-        <div class="collab-row">
-          <span class="collab-year">Nov, 2026 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title"><span class="nm">SYZYGY</span> | Art game</span>
-          <span class="collab-role">Sound System Develop / BGM</span>
-          <span class="collab-place">ArtCollider Lab, Seoul, KR (Upcoming) <span class="dash dash-d">- - - - -</span></span>
+    <!-- E. Contact -->
+    <div class="section-panel" id="panel-contact">
+      <div class="section-body">
+        <div class="contact-list">
+          <div class="contact-row">
+            <span class="contact-label">e-mail</span><span class="sep">|</span>
+            <a class="contact-link" href="mailto:o3oq3qo3o@gmail.com">o3oq3qo3o@gmail.com</a>
+          </div>
+          <div class="contact-row">
+            <span class="contact-label">instagram</span><span class="sep">|</span>
+            <a class="contact-link" href="https://instagram.com/ilconglee" target="_blank"
+              rel="noopener noreferrer">@ilconglee</a>
+          </div>
+          <span class="dash">- - - - - - - - - -</span>
         </div>
-        <div class="collab-row">
-          <span class="collab-year">Sep 9 - 13, 2026 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title"><span class="nm">I Love You, Customers :)</span> | VR Game</span>
-          <span class="collab-role">BGM, Sound design</span>
-          <span class="collab-place">Ars Electronica Festival, Linz, AT (Upcoming) <span class="dash dash-d">- - - - -</span></span>
-        </div>
-        <div class="collab-row">
-          <span class="collab-year">Dec 15 - 18, 2025 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title"><span class="nm">I Love You, Customers :)</span> | VR Game</span>
-          <span class="collab-role">Sound</span>
-          <span class="collab-place">SIGGRAPH ASIA, Convention and Exhibition Center, HK <span class="dash dash-d">- - - - -</span></span>
-        </div>
-        <div class="collab-row">
-          <span class="collab-year">Dec 4 - 6, 2025 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title"><span class="nm">SYZYGY</span> | Art game</span>
-          <span class="collab-role">Sound System Develop / BGM</span>
-          <span class="collab-place">Arts Korea Lab, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
-        </div>
-        <div class="collab-row">
-          <span class="collab-year">2025 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title"><span class="nm">PlantCare Simulator</span> | VR Game</span>
-          <span class="collab-role">BGM</span>
-          <span class="collab-place">VCU, VA, US <span class="dash dash-d">- - - - -</span></span>
-        </div>
-        <div class="collab-row">
-          <span class="collab-year">Jan 9 - 11, 2025 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title"><span class="nm">Hana : Starting Over</span> | XR Musical</span>
-          <span class="collab-role">Sound design</span>
-          <span class="collab-place">CKL Stage, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
-        </div>
-        <div class="collab-row">
-          <span class="collab-year">Dec 4 - 6, 2024 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title"><span class="nm">Hana : Starting Over</span> | XR Musical</span>
-          <span class="collab-role">Sound design</span>
-          <span class="collab-place">SIGGRAPH ASIA, International Forum, Tokyo, JP <span class="dash dash-d">- - - - -</span></span>
-        </div>
-        <div class="collab-row">
-          <span class="collab-year">Oct 10, 2024 <span class="dash dash-m">- - - - -</span></span>
-          <span class="collab-title"><span class="nm">DoorMan</span> | XR Musical</span>
-          <span class="collab-role">Sound design</span>
-          <span class="collab-place">Stage 66, Seoul, KR <span class="dash dash-d">- - - - -</span></span>
-        </div>
-        <span class="dash">- - - - - - - - - -</span>
       </div>
     </div>
-  </div>
 
-  <!-- D. Works -->
-  <div class="section-panel" id="panel-works">
-    <div class="section-body">
+    <!-- F. # — no content panel (circle only) -->
 
-      <div class="work-item">
-        <div class="work-title">
-          <a class="work-name" href="https://youtu.be/H0Ah2hXy-88" target="_blank" rel="noopener noreferrer"><span class="nm">'인고침 (忍苦砧)'</span> for 다듬잇돌 and Live Electronics</a>
-          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2026</span>
-        </div>
-        <a class="work-thumb-link" href="https://youtu.be/H0Ah2hXy-88" target="_blank" rel="noopener noreferrer">
-          <img class="work-thumb"
-               src="https://img.youtube.com/vi/H0Ah2hXy-88/maxresdefault.jpg"
-               onerror="this.onerror=null;this.src='https://img.youtube.com/vi/H0Ah2hXy-88/hqdefault.jpg';"
-               alt="인고침" loading="lazy">
-        </a>
-      </div>
+  </div><!-- #content-area -->
 
-      <div class="work-item">
-        <div class="work-title">
-          <a class="work-name" href="https://youtu.be/Tch5AWKle9g" target="_blank" rel="noopener noreferrer"><span class="nm">'天地人'</span> for One Performer and Sewing Machine with Arduino</a>
-          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
-        </div>
-        <a class="work-thumb-link" href="https://youtu.be/Tch5AWKle9g" target="_blank" rel="noopener noreferrer">
-          <img class="work-thumb"
-               src="https://img.youtube.com/vi/Tch5AWKle9g/maxresdefault.jpg"
-               onerror="this.onerror=null;this.src='https://img.youtube.com/vi/Tch5AWKle9g/hqdefault.jpg';"
-               alt="天地人" loading="lazy">
-        </a>
-      </div>
+  <script>
+    /* ================================================================
+       UTILITY
+    ================================================================ */
+    const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
 
-      <div class="work-item">
-        <div class="work-title">
-          <a class="work-name" href="https://youtu.be/GCeSyo8p-6E" target="_blank" rel="noopener noreferrer"><span class="nm">'Geliocentric'</span> for 6ch Live Electronics</a>
-          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2024</span>
-        </div>
-        <a class="work-thumb-link" href="https://youtu.be/GCeSyo8p-6E" target="_blank" rel="noopener noreferrer">
-          <img class="work-thumb"
-               src="https://img.youtube.com/vi/GCeSyo8p-6E/maxresdefault.jpg"
-               onerror="this.onerror=null;this.src='https://img.youtube.com/vi/GCeSyo8p-6E/hqdefault.jpg';"
-               alt="Geliocentric" loading="lazy">
-        </a>
-      </div>
+    /* ================================================================
+       NEEDLE CURSOR
+    ================================================================ */
+    const needleEl = document.getElementById('needle-svg');
+    let mouseX = -300;
+    let mouseY = -300;
 
-      <div class="work-item">
-        <div class="work-title">
-          <a class="work-name" href="https://youtu.be/1Zt9EetgQkI" target="_blank" rel="noopener noreferrer"><span class="nm">'Übermensch'</span> for 2ch Tape</a>
-          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2024</span>
-        </div>
-        <a class="work-thumb-link" href="https://youtu.be/1Zt9EetgQkI" target="_blank" rel="noopener noreferrer">
-          <img class="work-thumb"
-               src="https://img.youtube.com/vi/1Zt9EetgQkI/maxresdefault.jpg"
-               onerror="this.onerror=null;this.src='https://img.youtube.com/vi/1Zt9EetgQkI/hqdefault.jpg';"
-               alt="Übermensch" loading="lazy">
-        </a>
-      </div>
+    const ANGLE_DEG = -30;  /* counter-clockwise = standard cursor lean */
+    const ANGLE_RAD = ANGLE_DEG * Math.PI / 180;
 
-      <!-- No link, Coming Soon -->
-      <div class="work-item">
-        <div class="work-title">
-          <span class="work-name"><span class="nm">SYZYGY</span></span>
-          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
-        </div>
-        <div class="work-coming-soon">Coming Soon</div>
-      </div>
+    // left = mouseX - 11, top = mouseY  →  tip stays at (mouseX, mouseY) after rotation ✓
+    // Eye at SVG local (11, 47), relative to pivot (11,0) = (0, 47).
+    // After -30° rotation: dx = -47·sin(-30°) ≈ 23.5, dy = 47·cos(-30°) ≈ 40.7
+    const EYE_Y = 47;
+    const EYE_DX = -EYE_Y * Math.sin(ANGLE_RAD);   // ≈ 23.5
+    const EYE_DY = EYE_Y * Math.cos(ANGLE_RAD);   // ≈ 40.7
+    // Screen eye: (mouseX + EYE_DX, mouseY + EYE_DY)
+    // Needle right direction (perpendicular to axis, toward right side of needle):
+    const NEEDLE_RX = Math.cos(ANGLE_RAD);   // ≈  0.866
+    const NEEDLE_RY = Math.sin(ANGLE_RAD);   // ≈ -0.5
+    const STUB_LEN = 13;  // px: right-side stub drawn in front of needle
 
-      <!-- No link, Coming Soon -->
-      <div class="work-item">
-        <div class="work-title">
-          <span class="work-name"><span class="nm">I Love You, Customers :)</span></span>
-          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
-        </div>
-        <div class="work-coming-soon">Coming Soon</div>
-      </div>
+    function positionNeedle() {
+      needleEl.style.left = (mouseX - 11) + 'px';
+      needleEl.style.top = mouseY + 'px';
+    }
 
-      <!-- No link, Coming Soon -->
-      <div class="work-item">
-        <div class="work-title">
-          <span class="work-name"><span class="nm">PlantCare Simulator</span></span>
-          <span class="work-year"><span class="dash">- - - - - - - - - -</span> 2025</span>
-        </div>
-        <div class="work-coming-soon">Coming Soon</div>
-      </div>
-      <span class="dash">- - - - - - - - - -</span>
-    </div>
-  </div>
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (!isMobile()) positionNeedle();
+    });
 
-  <!-- E. Contact -->
-  <div class="section-panel" id="panel-contact">
-    <div class="section-body">
-      <div class="contact-list">
-        <div class="contact-row">
-          <span class="contact-label">e-mail</span><span class="sep">|</span>
-          <a class="contact-link" href="mailto:o3oq3qo3o@gmail.com">o3oq3qo3o@gmail.com</a>
-        </div>
-        <div class="contact-row">
-          <span class="contact-label">instagram</span><span class="sep">|</span>
-          <a class="contact-link" href="https://instagram.com/ilconglee" target="_blank" rel="noopener noreferrer">@ilconglee</a>
-        </div>
-        <span class="dash">- - - - - - - - - -</span>
-      </div>
-    </div>
-  </div>
+    // Show system pointer over links, hide needle
+    document.addEventListener('mouseover', e => {
+      if (isMobile()) return;
+      const el = e.target.closest('a, button');
+      if (el) {
+        needleEl.style.opacity = '0';
+        el.style.cursor = 'pointer';
+      }
+    });
+    document.addEventListener('mouseout', e => {
+      if (isMobile()) return;
+      const el = e.target.closest('a, button');
+      if (el) {
+        needleEl.style.opacity = '1';
+        el.style.cursor = '';
+      }
+    });
 
-  <!-- F. # — no content panel (circle only) -->
+    /* ================================================================
+       THREADED NEEDLE DRAWING — physical thread pinned at needle eye
+    ================================================================ */
+    const canvasBack = document.getElementById('thread-canvas-back');
+    const ctxBack = canvasBack.getContext('2d');
+    const canvasFront = document.getElementById('thread-canvas-front');
+    const ctxFront = canvasFront.getContext('2d');
 
-</div><!-- #content-area -->
+    function resizeCanvas() {
+      canvasBack.width = canvasFront.width = window.innerWidth;
+      canvasBack.height = canvasFront.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-<script>
-/* ================================================================
-   UTILITY
-================================================================ */
-const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+    /*
+      바늘 SVG가 -30도 회전되어 있으므로
+      바늘 내부 좌표도 같은 각도로 회전해서 화면 좌표로 바꾼다.
+    */
+    function needlePoint(localDx, localY) {
+      return {
+        x: mouseX + localDx * Math.cos(ANGLE_RAD) - localY * Math.sin(ANGLE_RAD),
+        y: mouseY + localDx * Math.sin(ANGLE_RAD) + localY * Math.cos(ANGLE_RAD)
+      };
+    }
 
-/* ================================================================
-   NEEDLE CURSOR
-================================================================ */
-const needleEl  = document.getElementById('needle-svg');
-let   mouseX    = -300;
-let   mouseY    = -300;
+    /*
+      실이 바늘귀에 딱 붙는 고정점.
+      이 점 하나만 고정된다.
+    */
+    function getThreadPinPoint() {
+      return needlePoint(0.2, 47.2);
+    }
 
-const ANGLE_DEG = -30;  /* counter-clockwise = standard cursor lean */
-const ANGLE_RAD = ANGLE_DEG * Math.PI / 180;
+    /* ── 뒤쪽으로 축 늘어지는 실 ───────────────────────────────── */
+    const BACK_NODES = 30;
+    const BACK_SEG_LEN = 6.2;
 
-// left = mouseX - 11, top = mouseY  →  tip stays at (mouseX, mouseY) after rotation ✓
-// Eye at SVG local (11, 47), relative to pivot (11,0) = (0, 47).
-// After -30° rotation: dx = -47·sin(-30°) ≈ 23.5, dy = 47·cos(-30°) ≈ 40.7
-const EYE_Y     = 47;
-const EYE_DX    = -EYE_Y * Math.sin(ANGLE_RAD);   // ≈ 23.5
-const EYE_DY    =  EYE_Y * Math.cos(ANGLE_RAD);   // ≈ 40.7
-// Screen eye: (mouseX + EYE_DX, mouseY + EYE_DY)
-// Needle right direction (perpendicular to axis, toward right side of needle):
-const NEEDLE_RX = Math.cos(ANGLE_RAD);   // ≈  0.866
-const NEEDLE_RY = Math.sin(ANGLE_RAD);   // ≈ -0.5
-const STUB_LEN  = 13;  // px: right-side stub drawn in front of needle
+    /* ── 앞쪽으로 빠져나오는 실: 더 길게 설정 ───────────────────── */
+    const FRONT_NODES = 22;
+    const FRONT_SEG_LEN = 4.2;
 
-function positionNeedle() {
-  needleEl.style.left = (mouseX - 11) + 'px';
-  needleEl.style.top  =  mouseY       + 'px';
-}
+    const DAMPING = 0.76;
+    const GRAVITY = 0.088;
+    const ITERS = 8;
 
-document.addEventListener('mousemove', e => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-  if (!isMobile()) positionNeedle();
-});
+    const backNodes = Array.from({ length: BACK_NODES }, () => ({
+      x: 0,
+      y: 0,
+      px: 0,
+      py: 0
+    }));
 
-// Show system pointer over links, hide needle
-document.addEventListener('mouseover', e => {
-  if (isMobile()) return;
-  const el = e.target.closest('a, button');
-  if (el) {
-    needleEl.style.opacity = '0';
-    el.style.cursor = 'pointer';
-  }
-});
-document.addEventListener('mouseout', e => {
-  if (isMobile()) return;
-  const el = e.target.closest('a, button');
-  if (el) {
-    needleEl.style.opacity = '1';
-    el.style.cursor = '';
-  }
-});
+    const frontNodes = Array.from({ length: FRONT_NODES }, () => ({
+      x: 0,
+      y: 0,
+      px: 0,
+      py: 0
+    }));
 
-/* ================================================================
-   THREADED NEEDLE DRAWING — physical thread pinned at needle eye
-================================================================ */
-const canvasBack  = document.getElementById('thread-canvas-back');
-const ctxBack     = canvasBack.getContext('2d');
-const canvasFront = document.getElementById('thread-canvas-front');
-const ctxFront    = canvasFront.getContext('2d');
+    let threadInit = false;
+    let lastPinX = null;
+    let lastPinY = null;
 
-function resizeCanvas() {
-  canvasBack.width  = canvasFront.width  = window.innerWidth;
-  canvasBack.height = canvasFront.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+    function pinThreadHeads() {
+      const p = getThreadPinPoint();
 
-/*
-  바늘 SVG가 -30도 회전되어 있으므로
-  바늘 내부 좌표도 같은 각도로 회전해서 화면 좌표로 바꾼다.
-*/
-function needlePoint(localDx, localY) {
-  return {
-    x: mouseX + localDx * Math.cos(ANGLE_RAD) - localY * Math.sin(ANGLE_RAD),
-    y: mouseY + localDx * Math.sin(ANGLE_RAD) + localY * Math.cos(ANGLE_RAD)
-  };
-}
+      backNodes[0].x = p.x;
+      backNodes[0].y = p.y;
+      backNodes[0].px = p.x;
+      backNodes[0].py = p.y;
 
-/*
-  실이 바늘귀에 딱 붙는 고정점.
-  이 점 하나만 고정된다.
-*/
-function getThreadPinPoint() {
-  return needlePoint(0.2, 47.2);
-}
+      frontNodes[0].x = p.x;
+      frontNodes[0].y = p.y;
+      frontNodes[0].px = p.x;
+      frontNodes[0].py = p.y;
 
-/* ── 뒤쪽으로 축 늘어지는 실 ───────────────────────────────── */
-const BACK_NODES = 30;
-const BACK_SEG_LEN = 6.2;
+      return p;
+    }
 
-/* ── 앞쪽으로 빠져나오는 실: 더 길게 설정 ───────────────────── */
-const FRONT_NODES = 22;
-const FRONT_SEG_LEN = 4.2;
+    function resetThreadAtNeedle() {
+      const p = getThreadPinPoint();
 
-const DAMPING = 0.76;
-const GRAVITY = 0.088;
-const ITERS   = 8;
+      for (let i = 0; i < BACK_NODES; i++) {
+        backNodes[i].x = p.x;
+        backNodes[i].y = p.y + i * BACK_SEG_LEN;
+        backNodes[i].px = backNodes[i].x;
+        backNodes[i].py = backNodes[i].y;
+      }
 
-const backNodes = Array.from({ length: BACK_NODES }, () => ({
-  x: 0,
-  y: 0,
-  px: 0,
-  py: 0
-}));
+      for (let i = 0; i < FRONT_NODES; i++) {
+        frontNodes[i].x = p.x + i * FRONT_SEG_LEN * 0.95;
+        frontNodes[i].y = p.y + i * FRONT_SEG_LEN * 0.25;
+        frontNodes[i].px = frontNodes[i].x;
+        frontNodes[i].py = frontNodes[i].y;
+      }
 
-const frontNodes = Array.from({ length: FRONT_NODES }, () => ({
-  x: 0,
-  y: 0,
-  px: 0,
-  py: 0
-}));
+      lastPinX = p.x;
+      lastPinY = p.y;
+      threadInit = true;
+    }
 
-let threadInit = false;
-let lastPinX = null;
-let lastPinY = null;
+    function initThreadPhysics() {
+      const p = getThreadPinPoint();
 
-function pinThreadHeads() {
-  const p = getThreadPinPoint();
+      // 뒤쪽 실은 아래로 시작
+      for (let i = 0; i < BACK_NODES; i++) {
+        backNodes[i].x = p.x;
+        backNodes[i].y = p.y + i * BACK_SEG_LEN;
+        backNodes[i].px = backNodes[i].x;
+        backNodes[i].py = backNodes[i].y;
+      }
 
-  backNodes[0].x  = p.x;
-  backNodes[0].y  = p.y;
-  backNodes[0].px = p.x;
-  backNodes[0].py = p.y;
+      // 앞쪽 실은 오른쪽 아래 방향으로 시작
+      for (let i = 0; i < FRONT_NODES; i++) {
+        frontNodes[i].x = p.x + i * FRONT_SEG_LEN * 0.95;
+        frontNodes[i].y = p.y + i * FRONT_SEG_LEN * 0.25;
+        frontNodes[i].px = frontNodes[i].x;
+        frontNodes[i].py = frontNodes[i].y;
+      }
 
-  frontNodes[0].x  = p.x;
-  frontNodes[0].y  = p.y;
-  frontNodes[0].px = p.x;
-  frontNodes[0].py = p.y;
+      threadInit = true;
+    }
 
-  return p;
-}
+    function stepChain(chain, damping, gravity) {
+      for (let i = 1; i < chain.length; i++) {
+        const n = chain[i];
 
-function resetThreadAtNeedle() {
-  const p = getThreadPinPoint();
+        const vx = (n.x - n.px) * damping;
+        const vy = (n.y - n.py) * damping;
 
-  for (let i = 0; i < BACK_NODES; i++) {
-    backNodes[i].x  = p.x;
-    backNodes[i].y  = p.y + i * BACK_SEG_LEN;
-    backNodes[i].px = backNodes[i].x;
-    backNodes[i].py = backNodes[i].y;
-  }
+        n.px = n.x;
+        n.py = n.y;
 
-  for (let i = 0; i < FRONT_NODES; i++) {
-    frontNodes[i].x  = p.x + i * FRONT_SEG_LEN * 0.95;
-    frontNodes[i].y  = p.y + i * FRONT_SEG_LEN * 0.25;
-    frontNodes[i].px = frontNodes[i].x;
-    frontNodes[i].py = frontNodes[i].y;
-  }
-
-  lastPinX = p.x;
-  lastPinY = p.y;
-  threadInit = true;
-}
-
-function initThreadPhysics() {
-  const p = getThreadPinPoint();
-
-  // 뒤쪽 실은 아래로 시작
-  for (let i = 0; i < BACK_NODES; i++) {
-    backNodes[i].x  = p.x;
-    backNodes[i].y  = p.y + i * BACK_SEG_LEN;
-    backNodes[i].px = backNodes[i].x;
-    backNodes[i].py = backNodes[i].y;
-  }
-
-  // 앞쪽 실은 오른쪽 아래 방향으로 시작
-  for (let i = 0; i < FRONT_NODES; i++) {
-    frontNodes[i].x  = p.x + i * FRONT_SEG_LEN * 0.95;
-    frontNodes[i].y  = p.y + i * FRONT_SEG_LEN * 0.25;
-    frontNodes[i].px = frontNodes[i].x;
-    frontNodes[i].py = frontNodes[i].y;
-  }
-
-  threadInit = true;
-}
-
-function stepChain(chain, damping, gravity) {
-  for (let i = 1; i < chain.length; i++) {
-    const n = chain[i];
-
-    const vx = (n.x - n.px) * damping;
-    const vy = (n.y - n.py) * damping;
-
-    n.px = n.x;
-    n.py = n.y;
-
-    n.x += vx;
-    n.y += vy + gravity;
-  }
-}
-
-function satisfyChain(chain, segLen) {
-  for (let it = 0; it < ITERS; it++) {
-    for (let i = 0; i < chain.length - 1; i++) {
-      const a = chain[i];
-      const b = chain[i + 1];
-
-      const dx = b.x - a.x;
-      const dy = b.y - a.y;
-      const d  = Math.sqrt(dx * dx + dy * dy) || 0.001;
-      const diff = (d - segLen) / d;
-
-      if (i === 0) {
-        // 0번 노드는 바늘귀에 고정, 1번 노드부터만 움직임
-        b.x -= dx * diff;
-        b.y -= dy * diff;
-      } else {
-        a.x += dx * diff * 0.5;
-        a.y += dy * diff * 0.5;
-        b.x -= dx * diff * 0.5;
-        b.y -= dy * diff * 0.5;
+        n.x += vx;
+        n.y += vy + gravity;
       }
     }
-  }
-}
 
-function stepThreadPhysics() {
-  if (mouseX < -200 || mouseY < -200) return;
+    function satisfyChain(chain, segLen) {
+      for (let it = 0; it < ITERS; it++) {
+        for (let i = 0; i < chain.length - 1; i++) {
+          const a = chain[i];
+          const b = chain[i + 1];
 
-  if (!threadInit) {
-    resetThreadAtNeedle();
-    return;
-  }
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const d = Math.sqrt(dx * dx + dy * dy) || 0.001;
+          const diff = (d - segLen) / d;
 
-  const p = getThreadPinPoint();
-
-  if (lastPinX !== null && lastPinY !== null) {
-    const dx = p.x - lastPinX;
-    const dy = p.y - lastPinY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-
-    if (dist > 180) {
-      resetThreadAtNeedle();
-      return;
-    }
-  }
-
-  lastPinX = p.x;
-  lastPinY = p.y;
-
-  pinThreadHeads();
-
-  stepChain(backNodes, DAMPING, GRAVITY);
-  stepChain(frontNodes, DAMPING, GRAVITY * 0.65);
-
-  satisfyChain(backNodes, BACK_SEG_LEN);
-  satisfyChain(frontNodes, FRONT_SEG_LEN);
-
-  pinThreadHeads();
-}
-
-function drawChain(ctx, chain) {
-  ctx.beginPath();
-  ctx.moveTo(chain[0].x, chain[0].y);
-
-  for (let i = 1; i < chain.length - 1; i++) {
-    const mx = (chain[i].x + chain[i + 1].x) / 2;
-    const my = (chain[i].y + chain[i + 1].y) / 2;
-    ctx.quadraticCurveTo(chain[i].x, chain[i].y, mx, my);
-  }
-
-  ctx.lineTo(chain[chain.length - 1].x, chain[chain.length - 1].y);
-  ctx.stroke();
-}
-
-function drawThread() {
-  ctxBack.clearRect(0, 0, canvasBack.width, canvasBack.height);
-  ctxFront.clearRect(0, 0, canvasFront.width, canvasFront.height);
-
-  if (isMobile() || !threadInit) return;
-
-  /*
-    뒤쪽 실: 바늘 SVG 뒤에 그려짐.
-    바늘 몸통에 가려지므로 자연스럽게 뒤쪽 실처럼 보인다.
-  */
-  ctxBack.save();
-  ctxBack.strokeStyle = '#000000';
-  ctxBack.lineWidth   = 1.2;
-  ctxBack.lineCap     = 'round';
-  ctxBack.lineJoin    = 'round';
-  drawChain(ctxBack, backNodes);
-  ctxBack.restore();
-
-  /*
-    앞쪽 실: 바늘귀 위에 그려짐.
-    긴 고정 통과선을 그리지 않고,
-    고정점 바로 다음 노드부터 물리 체인으로 이어진다.
-  */
-  ctxFront.save();
-  ctxFront.strokeStyle = '#000000';
-  ctxFront.lineWidth   = 1.2;
-  ctxFront.lineCap     = 'round';
-  ctxFront.lineJoin    = 'round';
-  drawChain(ctxFront, frontNodes);
-  ctxFront.restore();
-}
-
-function loop() {
-  if (!isMobile()) positionNeedle();
-  stepThreadPhysics();
-  drawThread();
-  requestAnimationFrame(loop);
-}
-loop();
-
-/* ================================================================
-   SVG STITCHING TEXT SYSTEM
-================================================================ */
-
-// Hidden SVG for font measurement (must be attached to DOM with fonts loaded)
-const measSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-measSVG.style.cssText =
-  'position:absolute;top:-9999px;left:-9999px;' +
-  'visibility:hidden;width:1px;height:1px;overflow:visible;';
-document.body.appendChild(measSVG);
-
-function measWidth(str, fs) {
-  const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  t.setAttribute('font-family', "'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif");
-  t.setAttribute('font-size', String(fs));
-  t.setAttribute('font-weight', '300');
-  t.textContent = str;
-  measSVG.appendChild(t);
-  const w = t.getComputedTextLength();
-  measSVG.removeChild(t);
-  return w;
-}
-
-/*
-  Tokenise a label string for SVG rendering.
-  모든 글자를 그대로 배치한다 (특수 치환 없음).
-
-  barH: total SVG/bar height (for computing baseline from top)
-  fs:   font-size in px
-
-  Returns: { tokens: [...], totalW: number, charCount: number }
-  token types:
-    { kind:'char',   ch, x, w, ci }   (ci = stagger index)
-    { kind:'xmark',  cx, cy, ci }
-*/
-function tokenise(label, fs, barH) {
-  const tokens = [];
-  let cx = 0;   // running x cursor
-  let ci = 0;   // char stagger index
-
-  const LETTER_SPACING = 0;
-
-  // With dominant-baseline="central" at y = barH/2, baseline ≈ barH/2 + fs*0.35
-  const baseline   = barH / 2 + fs * 0.35;
-  for (let i = 0; i < label.length; i++) {
-    const ch = label[i];
-
-    // 공백은 SVG가 잘라내서 getComputedTextLength()가 0을 반환한다.
-    // 'x x' 폭에서 'xx' 폭을 빼는 방식으로 실제 공백 폭을 구한다.
-    if (ch === ' ') {
-      cx += measWidth('x x', fs) - measWidth('xx', fs) + LETTER_SPACING;
-      ci++;
-      continue;
-    }
-
-    const w = measWidth(ch, fs);
-    tokens.push({ kind: 'char', ch, x: cx, w, ci });
-    cx += w + LETTER_SPACING;
-    ci++;
-  }
-
-  return { tokens, totalW: cx, charCount: ci };
-}
-
-/*
-  Build an SVG element containing the stitched text.
-  isStatic: true → always visible (no animation), used for sub-bars.
-*/
-function buildSVG(label, fs, barH, isStatic) {
-  const { tokens, totalW, charCount } = tokenise(label, fs, barH);
-
-  const svgW = Math.ceil(totalW);
-  const svgH = barH;
-  const midY = barH / 2;
-
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('width',   String(svgW));
-  svg.setAttribute('height',           String(svgH));
-  svg.setAttribute('viewBox',          `0 0 ${svgW} ${svgH}`);
-  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-
-  // Per-character stagger: 100ms between each char (completes before next starts)
-  const CHAR_DELAY = 0.1;
-
-  tokens.forEach(tok => {
-    if (tok.kind === 'char') {
-      const delay = isStatic ? 0 : tok.ci * CHAR_DELAY;
-
-      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      t.setAttribute('x',                String(tok.x));
-      t.setAttribute('y',                String(midY));
-      t.setAttribute('dominant-baseline','central');
-      t.setAttribute('font-family',      "'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif");
-      t.setAttribute('font-size',        String(fs));
-      t.setAttribute('font-weight',      '300');
-      t.setAttribute('fill',             '#ffffff');
-      t.textContent = tok.ch;
-
-      if (isStatic) {
-        t.style.opacity = '1';
-      } else {
-        t.style.opacity = '0';
-        t.dataset.delay = String(delay);
-        t.dataset.ci    = String(tok.ci);
-        t.classList.add('anim-ch');
+          if (i === 0) {
+            // 0번 노드는 바늘귀에 고정, 1번 노드부터만 움직임
+            b.x -= dx * diff;
+            b.y -= dy * diff;
+          } else {
+            a.x += dx * diff * 0.5;
+            a.y += dy * diff * 0.5;
+            b.x -= dx * diff * 0.5;
+            b.y -= dy * diff * 0.5;
+          }
+        }
       }
-      svg.appendChild(t);
-
     }
-  });
 
-  return svg;
-}
+    function stepThreadPhysics() {
+      if (mouseX < -200 || mouseY < -200) return;
 
-/* Animate all chars in a bar SVG in or out.
-   Cancels any pending in-rAFs before starting out. */
-function animBar(svg, dir) {
-  const chars  = svg.querySelectorAll('.anim-ch');
-  const xmarks = svg.querySelectorAll('.anim-x');
-  const total  = chars.length;
-  const DUR    = 0.06;   // fast per-char (finishes before next char starts at 0.1s stagger)
-
-  // Cancel pending in-direction rAF IDs stored on svg
-  if (svg._rafIds) {
-    svg._rafIds.forEach(id => cancelAnimationFrame(id));
-  }
-  svg._rafIds = [];
-
-  if (dir === 'in') {
-    // Reset to hidden synchronously, then schedule transition
-    chars.forEach(el => {
-      el.style.transition = 'none';
-      el.style.opacity    = '0';
-    });
-    xmarks.forEach(el => {
-      el.style.transition = 'none';
-      el.style.opacity    = '0';
-    });
-
-    // Force reflow so the opacity:0 reset registers
-    if (chars.length) void chars[0].getBoundingClientRect();
-
-    chars.forEach(el => {
-      const delay = parseFloat(el.dataset.delay || 0);
-      const id = requestAnimationFrame(() => {
-        el.style.transition = `opacity ${DUR}s ease-out ${delay}s`;
-        el.style.opacity    = '1';
-      });
-      svg._rafIds.push(id);
-    });
-    xmarks.forEach(el => {
-      const delay = parseFloat(el.dataset.delay || 0);
-      const id = requestAnimationFrame(() => {
-        el.style.transition = `opacity ${DUR}s ease-out ${delay}s`;
-        el.style.opacity    = '1';
-      });
-      svg._rafIds.push(id);
-    });
-
-  } else {
-    // Reverse stagger: last char index fades first
-    chars.forEach(el => {
-      const ci       = parseInt(el.dataset.ci || 0);
-      const revDelay = (total - 1 - ci) * 0.05;
-      el.style.transition = `opacity 0.05s ease-in ${revDelay}s`;
-      el.style.opacity    = '0';
-    });
-    xmarks.forEach(el => {
-      el.style.transition = 'opacity 0.05s ease-in';
-      el.style.opacity    = '0';
-    });
-  }
-}
-
-/* ================================================================
-   NAV BAR SETUP
-================================================================ */
-function setupNavBars() {
-  document.querySelectorAll('.nav-bar[data-label]').forEach(barEl => {
-    const label = barEl.dataset.label;
-    const svg   = buildSVG(label, 15, 27, false);  // 17 ≈ 27 * 0.65
-    const svgW  = parseInt(svg.getAttribute('width'));
-    barEl.style.width = (svgW + 28) + 'px';
-    barEl.appendChild(svg);
-
-    // 회전해도 이웃과 겹치지 않도록 자리를 예약하는 slot 으로 감싼다
-    const slot = document.createElement('div');
-    slot.className = 'nav-slot';
-    slot.style.setProperty('--bar-len', (svgW + 28) + 'px');
-    barEl.parentNode.insertBefore(slot, barEl);
-    slot.appendChild(barEl);
-
-    let active = false;
-
-    barEl.addEventListener('mouseenter', () => {
-      active = true;
-      animBar(svg, 'in');
-    });
-    barEl.addEventListener('mouseleave', () => {
-      // Don't animate out if this section is currently open (text stays pinned)
-      if (currentSection === barEl.dataset.section) return;
-      active = false;
-      animBar(svg, 'out');
-    });
-    barEl.addEventListener('click', () => {
-      handleBarTap(barEl, barEl.dataset.section);
-    });
-  });
-
-  // Hash circle
-  const hashEl  = document.getElementById('bar-hash');
-  const hashSVG = buildSVG('#', 17, 27, false);
-  hashEl.appendChild(hashSVG);
-
-  const hashSlot = document.createElement('div');
-  hashSlot.className = 'nav-slot';
-  hashSlot.style.setProperty('--bar-len', '27px');
-  hashEl.parentNode.insertBefore(hashSlot, hashEl);
-  hashSlot.appendChild(hashEl);
-  let hashActive = false;
-
-  hashEl.addEventListener('mouseenter', () => {
-    if (!hashActive) { hashActive = true; animBar(hashSVG, 'in'); }
-  });
-  hashEl.addEventListener('mouseleave', () => {
-    if (hashActive) { hashActive = false; animBar(hashSVG, 'out'); }
-  });
-  hashEl.addEventListener('click', () => {
-    hashEl.classList.remove('wiggling');
-    void hashEl.offsetWidth;            // reflow to restart animation
-    hashEl.classList.add('wiggling');
-    hashEl.addEventListener('animationend', () => {
-      hashEl.classList.remove('wiggling');
-    }, { once: true });
-  });
-}
-
-/* ================================================================
-   SECTION PANEL TOGGLE
-================================================================ */
-let currentSection = null;
-
-function unpinBar(secId) {
-  const el = document.querySelector(`.nav-bar[data-section="${secId}"], .nav-circle[data-section="${secId}"]`);
-  if (!el) return;
-  el.classList.remove('open-bar');
-  const slot = el.closest('.nav-slot');
-  if (slot) slot.classList.remove('open-slot', 'shrunk');
-  const s = el.querySelector('svg');
-  if (s) animBar(s, 'out');
-}
-
-/* 축소된 바를 누르면 섹션을 접지 않고 바 길이만 원래대로 되돌린다 */
-function handleBarTap(el, sec) {
-  const slot = el.closest('.nav-slot');
-  if (slot && slot.classList.contains('shrunk')) {
-    slot.classList.remove('shrunk');
-    const s = el.querySelector('svg');
-    if (s) setTimeout(() => animBar(s, 'in'), 300);
-    return;
-  }
-  toggleSection(sec);
-}
-
-/* 열린 섹션의 바: 모바일에서는 눕히고, 눕고 난 뒤 글자를 차례로 띄운다 */
-function pinBar(secId) {
-  const el = document.querySelector(`.nav-bar[data-section="${secId}"], .nav-circle[data-section="${secId}"]`);
-  if (!el) return;
-  el.classList.add('open-bar');
-  const slot = el.closest('.nav-slot');
-  if (slot) { slot.classList.add('open-slot'); slot.classList.remove('shrunk'); }
-  if (!isMobile()) return;
-  const s = el.querySelector('svg');
-  if (s) setTimeout(() => animBar(s, 'in'), 380);   // 회전이 끝난 뒤 글자 등장
-
-  // 눕은 바 아래에서 내용이 시작되도록 위 여백을 '즉시' 준다.
-  // slot 의 위치는 회전과 무관하게 고정이라 애니메이션 전에 계산해도 정확하다.
-  const area = document.getElementById('content-area');
-  const panel = document.getElementById('panel-' + secId);
-  if (panel && area && slot) {
-    const gap = slot.getBoundingClientRect().top - area.getBoundingClientRect().top + 27 + 14;
-    panel.style.paddingTop = Math.max(0, gap) + 'px';
-  }
-}
-
-function toggleSection(secId) {
-  if (secId === 'hash') return;
-  if (currentSection === secId) {
-    closePanel(secId);
-    unpinBar(secId);   // section closed → let text animate out
-    currentSection = null;
-  } else {
-    if (currentSection) {
-      closePanel(currentSection);
-      unpinBar(currentSection);  // switch → unpin old bar
-    }
-    openPanel(secId);
-    pinBar(secId);
-    currentSection = secId;
-    // bar text was already animated in by mouseenter; just keep it pinned
-  }
-}
-
-function openPanel(secId) {
-  const panel = document.getElementById('panel-' + secId);
-  if (!panel) return;
-
-  // Cancel any in-flight close
-  if (panel._closeTimer) { clearTimeout(panel._closeTimer); panel._closeTimer = null; }
-  if (panel._closeHandler) {
-    panel.removeEventListener('transitionend', panel._closeHandler);
-    panel._closeHandler = null;
-  }
-
-  panel.classList.add('open');    // enables display:block via CSS rule
-  void panel.offsetHeight;       // synchronous reflow → browser renders opacity:0 state
-  panel.classList.add('visible');// triggers CSS transition opacity:0→1
-}
-
-function closePanel(secId) {
-  const panel = document.getElementById('panel-' + secId);
-  if (!panel || !panel.classList.contains('open')) return;
-
-  panel.classList.remove('visible');
-
-  function hidePanel() {
-    panel.classList.remove('open');
-    panel.style.paddingTop = '';
-    panel._closeTimer   = null;
-    panel._closeHandler = null;
-  }
-
-  panel._closeHandler = function(e) {
-    // Only act on the opacity property to avoid double-firing (opacity + transform)
-    if (e.propertyName !== 'opacity') return;
-    clearTimeout(panel._closeTimer);
-    panel.removeEventListener('transitionend', panel._closeHandler);
-    hidePanel();
-  };
-
-  panel.addEventListener('transitionend', panel._closeHandler);
-  // Fallback if transitionend never fires (e.g., reduced-motion, display:none, etc.)
-  panel._closeTimer = setTimeout(() => {
-    if (panel._closeHandler) {
-      panel.removeEventListener('transitionend', panel._closeHandler);
-    }
-    hidePanel();
-  }, 600);
-}
-
-/* ================================================================
-   MOBILE TOUCH HANDLING
-================================================================ */
-function setupMobileTouch() {
-  document.querySelectorAll('.nav-bar[data-section], .nav-circle[data-section]').forEach(el => {
-    el.addEventListener('touchend', e => {
-      e.preventDefault();
-      const sec = el.dataset.section;
-      if (sec === 'hash') {
-        el.classList.remove('wiggling');
-        void el.offsetWidth;
-        el.classList.add('wiggling');
-        el.addEventListener('animationend', () => el.classList.remove('wiggling'), { once: true });
+      if (!threadInit) {
+        resetThreadAtNeedle();
         return;
       }
-      handleBarTap(el, sec);
-    });
-  });
-}
 
-/* ================================================================
-   BOOT — wait for Google Fonts before measuring character widths
-================================================================ */
-/* ================================================================
-   CUSTOM SCROLLBAR — 스크롤 중에만 나타나는 점선 스크롤바
-   네이티브 스크롤바는 CSS에서 숨기고, 여기서 직접 그린다.
-   axis: 'v' 세로 / 'h' 가로
-================================================================ */
-const BAR_W     = 2;    // 스크롤바 두께
-const MIN_LEN   = 24;   // 손잡이 최소 길이
-const HIDE_MS   = 800;  // 멈춘 뒤 사라지기까지
-const TRACK_PAD = 12;   // 트랙 양 끝 여백 (끝까지 내려도 이만큼 남는다)
+      const p = getThreadPinPoint();
 
-function customScrollbar(el, axis) {
-  const bar   = document.createElement('div');
-  const thumb = document.createElement('div');
-  bar.className   = 'cbar cbar-' + axis;
-  thumb.className = 'cthumb';
-  bar.appendChild(thumb);
-  document.body.appendChild(bar);
+      if (lastPinX !== null && lastPinY !== null) {
+        const dx = p.x - lastPinX;
+        const dy = p.y - lastPinY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
 
-  let timer;
+        if (dist > 180) {
+          resetThreadAtNeedle();
+          return;
+        }
+      }
 
-  function layout() {
-    // 닫힌 패널 안에 있으면 그리지 않는다
-    const panel = el.closest('.section-panel');
-    if (panel && !panel.classList.contains('open')) { bar.style.display = 'none'; return; }
+      lastPinX = p.x;
+      lastPinY = p.y;
 
-    const r = el.getBoundingClientRect();
+      pinThreadHeads();
 
-    if (axis === 'v') {
-      const track = el.scrollHeight - el.clientHeight;
-      if (track <= 0) { bar.style.display = 'none'; return; }
-      bar.style.display = 'block';
-      const barH = r.height - TRACK_PAD * 2;
-      bar.style.left   = (r.right - TRACK_PAD - BAR_W) + 'px';
-      bar.style.top    = (r.top + TRACK_PAD) + 'px';
-      bar.style.width  = BAR_W + 'px';
-      bar.style.height = barH + 'px';
+      stepChain(backNodes, DAMPING, GRAVITY);
+      stepChain(frontNodes, DAMPING, GRAVITY * 0.65);
 
-      const len = Math.max(MIN_LEN, barH * (el.clientHeight / el.scrollHeight));
-      thumb.style.width  = BAR_W + 'px';
-      thumb.style.height = len + 'px';
-      thumb.style.transform =
-        'translateY(' + (el.scrollTop / track) * (barH - len) + 'px)';
+      satisfyChain(backNodes, BACK_SEG_LEN);
+      satisfyChain(frontNodes, FRONT_SEG_LEN);
 
-    } else {
-      const track = el.scrollWidth - el.clientWidth;
-      if (track <= 0) { bar.style.display = 'none'; return; }
-      bar.style.display = 'block';
-      const barW = r.width - TRACK_PAD * 2;
-      bar.style.left   = (r.left + TRACK_PAD) + 'px';
-      bar.style.top    = (r.bottom - TRACK_PAD - BAR_W) + 'px';
-      bar.style.width  = barW + 'px';
-      bar.style.height = BAR_W + 'px';
-
-      const len = Math.max(MIN_LEN, barW * (el.clientWidth / el.scrollWidth));
-      thumb.style.height = BAR_W + 'px';
-      thumb.style.width  = len + 'px';
-      thumb.style.transform =
-        'translateX(' + (el.scrollLeft / track) * (barW - len) + 'px)';
+      pinThreadHeads();
     }
-  }
 
-  el.addEventListener('scroll', () => {
-    layout();
-    if (bar.style.display === 'none') return;
-    bar.classList.add('visible');
-    clearTimeout(timer);
-    timer = setTimeout(() => bar.classList.remove('visible'), HIDE_MS);
-  });
+    function drawChain(ctx, chain) {
+      ctx.beginPath();
+      ctx.moveTo(chain[0].x, chain[0].y);
 
-  window.addEventListener('resize', layout);
-  layout();
-}
+      for (let i = 1; i < chain.length - 1; i++) {
+        const mx = (chain[i].x + chain[i + 1].x) / 2;
+        const my = (chain[i].y + chain[i + 1].y) / 2;
+        ctx.quadraticCurveTo(chain[i].x, chain[i].y, mx, my);
+      }
 
-/* 모바일: 내용을 스크롤하기 시작하면 눕은 바를 첫 글자만 남기고 줄인다 */
-function setupBarShrinkOnScroll() {
-  const area = document.getElementById('content-area');
-  if (!area) return;
-  area.addEventListener('scroll', () => {
-    if (!isMobile()) return;
-    document
-      .querySelectorAll('.nav-slot.open-slot:not(.shrunk)')
-      .forEach(s => s.classList.add('shrunk'));
-  });
-}
+      ctx.lineTo(chain[chain.length - 1].x, chain[chain.length - 1].y);
+      ctx.stroke();
+    }
 
-function setupScrollbars() {
-  const area = document.getElementById('content-area');
-  if (area) customScrollbar(area, 'v');
-  document
-    .querySelectorAll('#panel-performances .info-list, .collab-list')
-    .forEach(el => customScrollbar(el, 'h'));
-}
+    function drawThread() {
+      ctxBack.clearRect(0, 0, canvasBack.width, canvasBack.height);
+      ctxFront.clearRect(0, 0, canvasFront.width, canvasFront.height);
 
-window.addEventListener('DOMContentLoaded', () => {
-  setupScrollbars();
-  setupBarShrinkOnScroll();
-  document.fonts.ready.then(() => {
-    setupNavBars();
-    setupMobileTouch();
-  });
-});
-</script>
+      if (isMobile() || !threadInit) return;
+
+      /*
+        뒤쪽 실: 바늘 SVG 뒤에 그려짐.
+        바늘 몸통에 가려지므로 자연스럽게 뒤쪽 실처럼 보인다.
+      */
+      ctxBack.save();
+      ctxBack.strokeStyle = '#000000';
+      ctxBack.lineWidth = 1.2;
+      ctxBack.lineCap = 'round';
+      ctxBack.lineJoin = 'round';
+      drawChain(ctxBack, backNodes);
+      ctxBack.restore();
+
+      /*
+        앞쪽 실: 바늘귀 위에 그려짐.
+        긴 고정 통과선을 그리지 않고,
+        고정점 바로 다음 노드부터 물리 체인으로 이어진다.
+      */
+      ctxFront.save();
+      ctxFront.strokeStyle = '#000000';
+      ctxFront.lineWidth = 1.2;
+      ctxFront.lineCap = 'round';
+      ctxFront.lineJoin = 'round';
+      drawChain(ctxFront, frontNodes);
+      ctxFront.restore();
+    }
+
+    function loop() {
+      if (!isMobile()) positionNeedle();
+      stepThreadPhysics();
+      drawThread();
+      requestAnimationFrame(loop);
+    }
+    loop();
+
+    /* ================================================================
+       SVG STITCHING TEXT SYSTEM
+    ================================================================ */
+
+    // Hidden SVG for font measurement (must be attached to DOM with fonts loaded)
+    const measSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    measSVG.style.cssText =
+      'position:absolute;top:-9999px;left:-9999px;' +
+      'visibility:hidden;width:1px;height:1px;overflow:visible;';
+    document.body.appendChild(measSVG);
+
+    function measWidth(str, fs) {
+      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t.setAttribute('font-family', "'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif");
+      t.setAttribute('font-size', String(fs));
+      t.setAttribute('font-weight', '300');
+      t.textContent = str;
+      measSVG.appendChild(t);
+      const w = t.getComputedTextLength();
+      measSVG.removeChild(t);
+      return w;
+    }
+
+    /*
+      Tokenise a label string for SVG rendering.
+      모든 글자를 그대로 배치한다 (특수 치환 없음).
+    
+      barH: total SVG/bar height (for computing baseline from top)
+      fs:   font-size in px
+    
+      Returns: { tokens: [...], totalW: number, charCount: number }
+      token types:
+        { kind:'char',   ch, x, w, ci }   (ci = stagger index)
+        { kind:'xmark',  cx, cy, ci }
+    */
+    function tokenise(label, fs, barH) {
+      const tokens = [];
+      let cx = 0;   // running x cursor
+      let ci = 0;   // char stagger index
+
+      const LETTER_SPACING = 0;
+
+      // With dominant-baseline="central" at y = barH/2, baseline ≈ barH/2 + fs*0.35
+      const baseline = barH / 2 + fs * 0.35;
+      for (let i = 0; i < label.length; i++) {
+        const ch = label[i];
+
+        // 공백은 SVG가 잘라내서 getComputedTextLength()가 0을 반환한다.
+        // 'x x' 폭에서 'xx' 폭을 빼는 방식으로 실제 공백 폭을 구한다.
+        if (ch === ' ') {
+          cx += measWidth('x x', fs) - measWidth('xx', fs) + LETTER_SPACING;
+          ci++;
+          continue;
+        }
+
+        const w = measWidth(ch, fs);
+        tokens.push({ kind: 'char', ch, x: cx, w, ci });
+        cx += w + LETTER_SPACING;
+        ci++;
+      }
+
+      return { tokens, totalW: cx, charCount: ci };
+    }
+
+    /*
+      Build an SVG element containing the stitched text.
+      isStatic: true → always visible (no animation), used for sub-bars.
+    */
+    function buildSVG(label, fs, barH, isStatic) {
+      const { tokens, totalW, charCount } = tokenise(label, fs, barH);
+
+      const svgW = Math.ceil(totalW);
+      const svgH = barH;
+      const midY = barH / 2;
+
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', String(svgW));
+      svg.setAttribute('height', String(svgH));
+      svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
+      svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+      // Per-character stagger: 100ms between each char (completes before next starts)
+      const CHAR_DELAY = 0.1;
+
+      tokens.forEach(tok => {
+        if (tok.kind === 'char') {
+          const delay = isStatic ? 0 : tok.ci * CHAR_DELAY;
+
+          const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          t.setAttribute('x', String(tok.x));
+          t.setAttribute('y', String(midY));
+          t.setAttribute('dominant-baseline', 'central');
+          t.setAttribute('font-family', "'Inter Tight', 'IBM Plex Sans KR', 'Noto Sans SC', Helvetica, Arial, sans-serif");
+          t.setAttribute('font-size', String(fs));
+          t.setAttribute('font-weight', '300');
+          t.setAttribute('fill', '#ffffff');
+          t.textContent = tok.ch;
+
+          if (isStatic) {
+            t.style.opacity = '1';
+          } else {
+            t.style.opacity = '0';
+            t.dataset.delay = String(delay);
+            t.dataset.ci = String(tok.ci);
+            t.classList.add('anim-ch');
+          }
+          svg.appendChild(t);
+
+        }
+      });
+
+      return svg;
+    }
+
+    /* Animate all chars in a bar SVG in or out.
+       Cancels any pending in-rAFs before starting out. */
+    function animBar(svg, dir) {
+      const chars = svg.querySelectorAll('.anim-ch');
+      const xmarks = svg.querySelectorAll('.anim-x');
+      const total = chars.length;
+      const DUR = 0.06;   // fast per-char (finishes before next char starts at 0.1s stagger)
+
+      // Cancel pending in-direction rAF IDs stored on svg
+      if (svg._rafIds) {
+        svg._rafIds.forEach(id => cancelAnimationFrame(id));
+      }
+      svg._rafIds = [];
+
+      if (dir === 'in') {
+        // Reset to hidden synchronously, then schedule transition
+        chars.forEach(el => {
+          el.style.transition = 'none';
+          el.style.opacity = '0';
+        });
+        xmarks.forEach(el => {
+          el.style.transition = 'none';
+          el.style.opacity = '0';
+        });
+
+        // Force reflow so the opacity:0 reset registers
+        if (chars.length) void chars[0].getBoundingClientRect();
+
+        chars.forEach(el => {
+          const delay = parseFloat(el.dataset.delay || 0);
+          const id = requestAnimationFrame(() => {
+            el.style.transition = `opacity ${DUR}s ease-out ${delay}s`;
+            el.style.opacity = '1';
+          });
+          svg._rafIds.push(id);
+        });
+        xmarks.forEach(el => {
+          const delay = parseFloat(el.dataset.delay || 0);
+          const id = requestAnimationFrame(() => {
+            el.style.transition = `opacity ${DUR}s ease-out ${delay}s`;
+            el.style.opacity = '1';
+          });
+          svg._rafIds.push(id);
+        });
+
+      } else {
+        // Reverse stagger: last char index fades first
+        chars.forEach(el => {
+          const ci = parseInt(el.dataset.ci || 0);
+          const revDelay = (total - 1 - ci) * 0.05;
+          el.style.transition = `opacity 0.05s ease-in ${revDelay}s`;
+          el.style.opacity = '0';
+        });
+        xmarks.forEach(el => {
+          el.style.transition = 'opacity 0.05s ease-in';
+          el.style.opacity = '0';
+        });
+      }
+    }
+
+    /* ================================================================
+       NAV BAR SETUP
+    ================================================================ */
+    function setupNavBars() {
+      document.querySelectorAll('.nav-bar[data-label]').forEach(barEl => {
+        const label = barEl.dataset.label;
+        const svg = buildSVG(label, 15, 27, false);  // 17 ≈ 27 * 0.65
+        const svgW = parseInt(svg.getAttribute('width'));
+        barEl.style.width = (svgW + 28) + 'px';
+        barEl.appendChild(svg);
+
+        // 회전해도 이웃과 겹치지 않도록 자리를 예약하는 slot 으로 감싼다
+        const slot = document.createElement('div');
+        slot.className = 'nav-slot';
+        slot.style.setProperty('--bar-len', (svgW + 28) + 'px');
+        barEl.parentNode.insertBefore(slot, barEl);
+        slot.appendChild(barEl);
+
+        let active = false;
+
+        barEl.addEventListener('mouseenter', () => {
+          active = true;
+          animBar(svg, 'in');
+        });
+        barEl.addEventListener('mouseleave', () => {
+          // Don't animate out if this section is currently open (text stays pinned)
+          if (currentSection === barEl.dataset.section) return;
+          active = false;
+          animBar(svg, 'out');
+        });
+        barEl.addEventListener('click', () => {
+          handleBarTap(barEl, barEl.dataset.section);
+        });
+      });
+
+      // Hash circle
+      const hashEl = document.getElementById('bar-hash');
+      const hashSVG = buildSVG('#', 17, 27, false);
+      hashEl.appendChild(hashSVG);
+
+      const hashSlot = document.createElement('div');
+      hashSlot.className = 'nav-slot';
+      hashSlot.style.setProperty('--bar-len', '27px');
+      hashEl.parentNode.insertBefore(hashSlot, hashEl);
+      hashSlot.appendChild(hashEl);
+      let hashActive = false;
+
+      hashEl.addEventListener('mouseenter', () => {
+        if (!hashActive) { hashActive = true; animBar(hashSVG, 'in'); }
+      });
+      hashEl.addEventListener('mouseleave', () => {
+        if (hashActive) { hashActive = false; animBar(hashSVG, 'out'); }
+      });
+      hashEl.addEventListener('click', () => {
+        hashEl.classList.remove('wiggling');
+        void hashEl.offsetWidth;            // reflow to restart animation
+        hashEl.classList.add('wiggling');
+        hashEl.addEventListener('animationend', () => {
+          hashEl.classList.remove('wiggling');
+        }, { once: true });
+      });
+    }
+
+    /* ================================================================
+       SECTION PANEL TOGGLE
+    ================================================================ */
+    let currentSection = null;
+
+    function unpinBar(secId) {
+      const el = document.querySelector(`.nav-bar[data-section="${secId}"], .nav-circle[data-section="${secId}"]`);
+      if (!el) return;
+      el.classList.remove('open-bar');
+      const slot = el.closest('.nav-slot');
+      if (slot) slot.classList.remove('open-slot', 'shrunk');
+      const s = el.querySelector('svg');
+      if (s) animBar(s, 'out');
+    }
+
+    /* 축소된 바를 누르면 섹션을 접지 않고 바 길이만 원래대로 되돌린다 */
+    function handleBarTap(el, sec) {
+      const slot = el.closest('.nav-slot');
+      if (slot && slot.classList.contains('shrunk')) {
+        slot.classList.remove('shrunk');
+        const s = el.querySelector('svg');
+        if (s) setTimeout(() => animBar(s, 'in'), 300);
+        return;
+      }
+      toggleSection(sec);
+    }
+
+    /* 열린 섹션의 바: 모바일에서는 눕히고, 눕고 난 뒤 글자를 차례로 띄운다 */
+    function pinBar(secId) {
+      const el = document.querySelector(`.nav-bar[data-section="${secId}"], .nav-circle[data-section="${secId}"]`);
+      if (!el) return;
+      el.classList.add('open-bar');
+      const slot = el.closest('.nav-slot');
+      if (slot) { slot.classList.add('open-slot'); slot.classList.remove('shrunk'); }
+      if (!isMobile()) return;
+      const s = el.querySelector('svg');
+      if (s) setTimeout(() => animBar(s, 'in'), 380);   // 회전이 끝난 뒤 글자 등장
+
+      // 눕은 바 아래에서 내용이 시작되도록 위 여백을 '즉시' 준다.
+      // slot 의 위치는 회전과 무관하게 고정이라 애니메이션 전에 계산해도 정확하다.
+      const area = document.getElementById('content-area');
+      const panel = document.getElementById('panel-' + secId);
+      if (panel && area && slot) {
+        const gap = slot.getBoundingClientRect().top - area.getBoundingClientRect().top + 27 + 14;
+        panel.style.paddingTop = Math.max(0, gap) + 'px';
+      }
+    }
+
+    function toggleSection(secId) {
+      if (secId === 'hash') return;
+      if (currentSection === secId) {
+        closePanel(secId);
+        unpinBar(secId);   // section closed → let text animate out
+        currentSection = null;
+      } else {
+        if (currentSection) {
+          closePanel(currentSection);
+          unpinBar(currentSection);  // switch → unpin old bar
+        }
+        openPanel(secId);
+        pinBar(secId);
+        currentSection = secId;
+        // bar text was already animated in by mouseenter; just keep it pinned
+      }
+    }
+
+    function openPanel(secId) {
+      const panel = document.getElementById('panel-' + secId);
+      if (!panel) return;
+
+      // Cancel any in-flight close
+      if (panel._closeTimer) { clearTimeout(panel._closeTimer); panel._closeTimer = null; }
+      if (panel._closeHandler) {
+        panel.removeEventListener('transitionend', panel._closeHandler);
+        panel._closeHandler = null;
+      }
+
+      panel.classList.add('open');    // enables display:block via CSS rule
+      void panel.offsetHeight;       // synchronous reflow → browser renders opacity:0 state
+      panel.classList.add('visible');// triggers CSS transition opacity:0→1
+    }
+
+    function closePanel(secId) {
+      const panel = document.getElementById('panel-' + secId);
+      if (!panel || !panel.classList.contains('open')) return;
+
+      panel.classList.remove('visible');
+
+      function hidePanel() {
+        panel.classList.remove('open');
+        panel.style.paddingTop = '';
+        panel._closeTimer = null;
+        panel._closeHandler = null;
+      }
+
+      panel._closeHandler = function (e) {
+        // Only act on the opacity property to avoid double-firing (opacity + transform)
+        if (e.propertyName !== 'opacity') return;
+        clearTimeout(panel._closeTimer);
+        panel.removeEventListener('transitionend', panel._closeHandler);
+        hidePanel();
+      };
+
+      panel.addEventListener('transitionend', panel._closeHandler);
+      // Fallback if transitionend never fires (e.g., reduced-motion, display:none, etc.)
+      panel._closeTimer = setTimeout(() => {
+        if (panel._closeHandler) {
+          panel.removeEventListener('transitionend', panel._closeHandler);
+        }
+        hidePanel();
+      }, 600);
+    }
+
+    /* ================================================================
+       MOBILE TOUCH HANDLING
+    ================================================================ */
+    function setupMobileTouch() {
+      document.querySelectorAll('.nav-bar[data-section], .nav-circle[data-section]').forEach(el => {
+        el.addEventListener('touchend', e => {
+          e.preventDefault();
+          const sec = el.dataset.section;
+          if (sec === 'hash') {
+            el.classList.remove('wiggling');
+            void el.offsetWidth;
+            el.classList.add('wiggling');
+            el.addEventListener('animationend', () => el.classList.remove('wiggling'), { once: true });
+            return;
+          }
+          handleBarTap(el, sec);
+        });
+      });
+    }
+
+    /* ================================================================
+       BOOT — wait for Google Fonts before measuring character widths
+    ================================================================ */
+    /* ================================================================
+       CUSTOM SCROLLBAR — 스크롤 중에만 나타나는 점선 스크롤바
+       네이티브 스크롤바는 CSS에서 숨기고, 여기서 직접 그린다.
+       axis: 'v' 세로 / 'h' 가로
+    ================================================================ */
+    const BAR_W = 2;    // 스크롤바 두께
+    const MIN_LEN = 24;   // 손잡이 최소 길이
+    const HIDE_MS = 800;  // 멈춘 뒤 사라지기까지
+    const TRACK_PAD = 12;   // 트랙 양 끝 여백 (끝까지 내려도 이만큼 남는다)
+
+    function customScrollbar(el, axis) {
+      const bar = document.createElement('div');
+      const thumb = document.createElement('div');
+      bar.className = 'cbar cbar-' + axis;
+      thumb.className = 'cthumb';
+      bar.appendChild(thumb);
+      document.body.appendChild(bar);
+
+      let timer;
+
+      function layout() {
+        // 닫힌 패널 안에 있으면 그리지 않는다
+        const panel = el.closest('.section-panel');
+        if (panel && !panel.classList.contains('open')) { bar.style.display = 'none'; return; }
+
+        const r = el.getBoundingClientRect();
+
+        if (axis === 'v') {
+          const track = el.scrollHeight - el.clientHeight;
+          if (track <= 0) { bar.style.display = 'none'; return; }
+          bar.style.display = 'block';
+          const barH = r.height - TRACK_PAD * 2;
+          bar.style.left = (r.right - TRACK_PAD - BAR_W) + 'px';
+          bar.style.top = (r.top + TRACK_PAD) + 'px';
+          bar.style.width = BAR_W + 'px';
+          bar.style.height = barH + 'px';
+
+          const len = Math.max(MIN_LEN, barH * (el.clientHeight / el.scrollHeight));
+          thumb.style.width = BAR_W + 'px';
+          thumb.style.height = len + 'px';
+          thumb.style.transform =
+            'translateY(' + (el.scrollTop / track) * (barH - len) + 'px)';
+
+        } else {
+          const track = el.scrollWidth - el.clientWidth;
+          if (track <= 0) { bar.style.display = 'none'; return; }
+          bar.style.display = 'block';
+          const barW = r.width - TRACK_PAD * 2;
+          bar.style.left = (r.left + TRACK_PAD) + 'px';
+          bar.style.top = (r.bottom - TRACK_PAD - BAR_W) + 'px';
+          bar.style.width = barW + 'px';
+          bar.style.height = BAR_W + 'px';
+
+          const len = Math.max(MIN_LEN, barW * (el.clientWidth / el.scrollWidth));
+          thumb.style.height = BAR_W + 'px';
+          thumb.style.width = len + 'px';
+          thumb.style.transform =
+            'translateX(' + (el.scrollLeft / track) * (barW - len) + 'px)';
+        }
+      }
+
+      el.addEventListener('scroll', () => {
+        layout();
+        if (bar.style.display === 'none') return;
+        bar.classList.add('visible');
+        clearTimeout(timer);
+        timer = setTimeout(() => bar.classList.remove('visible'), HIDE_MS);
+      });
+
+      window.addEventListener('resize', layout);
+      layout();
+    }
+
+    /* 모바일: 내용을 스크롤하기 시작하면 눕은 바를 첫 글자만 남기고 줄인다 */
+    function setupBarShrinkOnScroll() {
+      const area = document.getElementById('content-area');
+      if (!area) return;
+      area.addEventListener('scroll', () => {
+        if (!isMobile()) return;
+        document
+          .querySelectorAll('.nav-slot.open-slot:not(.shrunk)')
+          .forEach(s => s.classList.add('shrunk'));
+      });
+    }
+
+    function setupScrollbars() {
+      const area = document.getElementById('content-area');
+      if (area) customScrollbar(area, 'v');
+      document
+        .querySelectorAll('#panel-performances .info-list, .collab-list')
+        .forEach(el => customScrollbar(el, 'h'));
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setupScrollbars();
+      setupBarShrinkOnScroll();
+      document.fonts.ready.then(() => {
+        setupNavBars();
+        setupMobileTouch();
+      });
+    });
+  </script>
 </body>
+
 </html>
